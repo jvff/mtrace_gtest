@@ -1,0 +1,7 @@
+apply plugin: 'cpp'
+
+model {
+    components {
+        mtrace_gtest(NativeLibrarySpec)
+    }
+}
