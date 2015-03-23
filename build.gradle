@@ -31,7 +31,9 @@ model {
     }
 }
 
-task test(type: Exec, dependsOn: 'testExecutable') {
+task checkHeaderGuards(type: com.janitovff.headerguardplugin.HeaderGuardTask)
+
+task test(type: Exec, dependsOn: ['testExecutable', 'checkHeaderGuards']) {
     doFirst {
         def binary = binaries.getByName 'testExecutable'
         def executableFile = binary.getExecutableFile()
