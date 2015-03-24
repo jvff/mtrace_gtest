@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
 #include "MemoryTracerListener.hpp"
 
@@ -8,14 +9,16 @@
 #define DIRNAME_TEMPLATE "/tmp/mtrace_gtest.XXXXXX"
 
 MemoryTracerListener::MemoryTracerListener() {
-    char* dirName = strdup(DIRNAME_TEMPLATE);
-
+    mtraceDirName = strdup(DIRNAME_TEMPLATE);
     mtraceFileName = strdup(DIRNAME_TEMPLATE "/mtrace");
 
-    if (mkdtemp(dirName) != NULL && dirName[0] != 0) {
-        memcpy(mtraceFileName, dirName, strlen(dirName));
+    if (mkdtemp(mtraceDirName) != NULL && mtraceDirName[0] != 0) {
+        memcpy(mtraceFileName, mtraceDirName, strlen(mtraceDirName));
         setenv(ENVIRONMENT_VARIABLE, mtraceFileName, 0);
     }
+}
 
-    free(dirName);
+MemoryTracerListener::~MemoryTracerListener() {
+    unlink(mtraceFileName);
+    rmdir(mtraceDirName);
 }

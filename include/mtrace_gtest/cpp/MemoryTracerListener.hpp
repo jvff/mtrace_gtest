@@ -5,10 +5,12 @@
 
 class MemoryTracerListener: public testing::EmptyTestEventListener {
 private:
+    char* mtraceDirName;
     char* mtraceFileName;
 
 public:
     MemoryTracerListener();
+    ~MemoryTracerListener();
 };
 
 #endif
