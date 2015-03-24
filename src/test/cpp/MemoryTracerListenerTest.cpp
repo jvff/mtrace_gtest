@@ -65,3 +65,8 @@ TEST(MemoryTracerListenerTest, traceFileIsInNewTempDir) {
 
     EXPECT_TRUE(strncmp(expectedDirAndFileName, dirName, dirPrefixLength) == 0);
 }
+
+TEST(MemoryTracerListenerTest, implementsTestListener) {
+    testing::TestEventListener* listener = new MemoryTracerListener();
+    delete listener;
+}
