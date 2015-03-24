@@ -8,100 +8,128 @@
 
 #include "MemoryTracerListener.hpp"
 
-#define ENV_VAR "MALLOC_TRACE"
+class MemoryTracerListenerTest : public testing::Test {
+private:
+    const char* environmentVariable;
+    char* dirPath;
 
-TEST(MemoryTracerListenerTest, setEnvironmentTest) {
+protected:
     MemoryTracerListener* listener;
 
-    unsetenv(ENV_VAR);
-    listener = new MemoryTracerListener();
+    virtual void SetUp() {
+        dirPath = NULL;
 
-    EXPECT_FALSE(getenv(ENV_VAR) == NULL);
+        environmentVariable = "MALLOC_TRACE";
+        unsetenv(environmentVariable);
 
-    delete listener;
+        listener = new MemoryTracerListener();
+    }
+
+    virtual void TearDown() {
+        if (listener != NULL)
+            destroy();
+
+        if (dirPath != NULL)
+            free(dirPath);
+    }
+
+    void destroy() {
+        delete listener;
+        listener = NULL;
+    }
+
+    const char* getEnvironmentVariable() {
+        return getenv(environmentVariable);
+    }
+
+    const char* getFilePath() {
+        return getEnvironmentVariable();
+    }
+
+    const char* getFileName() {
+        const char* filePath = getFilePath();
+        const char* fileName = strrchr(filePath, '/');
+
+        return fileName == NULL ? filePath : fileName + 1;
+    }
+
+    const char* getDirPath() {
+        if (dirPath == NULL) {
+            const char* filePath = getFilePath();
+            const char* fileName = strrchr(filePath, '/');
+
+            if (fileName == NULL)
+                return NULL;
+
+            dirPath = strdup(filePath);
+            dirPath[fileName - filePath] = '\0';
+        }
+
+        return dirPath;
+    }
+
+    const char* getDirName() {
+        const char* dirPath = getDirPath();
+
+        if (dirPath == NULL)
+            return NULL;
+
+        const char* dirName = strrchr(dirPath, '/');
+
+        return dirName == NULL ? dirPath : dirName + 1;
+    }
+};
+
+TEST_F(MemoryTracerListenerTest, setEnvironmentTest) {
+    EXPECT_FALSE(getEnvironmentVariable() == NULL);
 }
 
-TEST(MemoryTracerListenerTest, traceFileIsInTempDir) {
-    MemoryTracerListener listener;
-
-    EXPECT_TRUE(memcmp("/tmp/", getenv(ENV_VAR), 5) == 0);
+TEST_F(MemoryTracerListenerTest, traceFileIsInTempDir) {
+    EXPECT_TRUE(memcmp("/tmp/", getFilePath(), 5) == 0);
 }
 
-TEST(MemoryTracerListenerTest, traceFileDoesntExistYet) {
-    MemoryTracerListener listener;
+TEST_F(MemoryTracerListenerTest, traceFileDoesntExistYet) {
     struct stat info;
 
-    EXPECT_NE(stat(getenv(ENV_VAR), &info), 0);
+    EXPECT_NE(stat(getFilePath(), &info), 0);
     EXPECT_EQ(errno, ENOENT);
 }
 
-TEST(MemoryTracerListenerTest, traceFileNameIsFixed) {
-    MemoryTracerListener listener;
-
-    const char* filePath = getenv(ENV_VAR);
-    const char* expectedFileName = "/mtrace";
-    int fileNameLength = strlen(expectedFileName);
-    int expectedFileNamePos = strlen(filePath) - fileNameLength;
-
-    ASSERT_GT(expectedFileNamePos, 0);
-
-    const char* fileName = &filePath[expectedFileNamePos];
-
-    EXPECT_TRUE(strncmp(expectedFileName, fileName, fileNameLength) == 0);
+TEST_F(MemoryTracerListenerTest, traceFileNameIsFixed) {
+    EXPECT_STREQ("mtrace", getFileName());
 }
 
-TEST(MemoryTracerListenerTest, traceFileIsInNewTempDir) {
-    MemoryTracerListener listener;
+TEST_F(MemoryTracerListenerTest, traceFileIsInNewTempDir) {
+    const char* dirName = getDirName();
+    char* dirPrefix = strdup(dirName);
+    const int dirNameLength = strlen(dirName);
+    const int wildcardLength = 6;
 
-    const char* filePath = getenv(ENV_VAR);
-    const char* expectedDirAndFileName = "/mtrace_gtest.XXXXXX/mtrace";
-    int dirPrefixLength = strlen("/mtrace_gtest.");
-    int fileAndDirNameLength = strlen(expectedDirAndFileName);
-    int expectedDirNamePos = strlen(filePath) - fileAndDirNameLength;
+    ASSERT_GT(dirNameLength, wildcardLength);
 
-    ASSERT_GT(expectedDirNamePos, 0);
+    dirPrefix[strlen(dirName) - wildcardLength] = '\0';
 
-    const char* dirName = &filePath[expectedDirNamePos];
+    EXPECT_STREQ("mtrace_gtest.", dirPrefix);
 
-    EXPECT_TRUE(strncmp(expectedDirAndFileName, dirName, dirPrefixLength) == 0);
+    free(dirPrefix);
 }
 
-TEST(MemoryTracerListenerTest, tempDirExists) {
-    MemoryTracerListener listener;
+TEST_F(MemoryTracerListenerTest, tempDirExists) {
     struct stat info;
 
-    const char* filePath = getenv(ENV_VAR);
-    char* dirPath = strdup(filePath);
-    char* lastPathSeparator = strrchr(dirPath, '/');
-
-    *lastPathSeparator = 0;
-
-    EXPECT_EQ(stat(dirPath, &info), 0);
+    EXPECT_EQ(stat(getDirPath(), &info), 0);
     EXPECT_TRUE(S_ISDIR(info.st_mode));
-
-    free(dirPath);
 }
 
-TEST(MemoryTracerListenerTest, tempDirIsDeletedAfterDestruction) {
+TEST_F(MemoryTracerListenerTest, tempDirIsDeletedAfterDestruction) {
     struct stat info;
 
-    MemoryTracerListener* listener = new MemoryTracerListener();
+    destroy();
 
-    const char* filePath = getenv(ENV_VAR);
-    char* dirPath = strdup(filePath);
-    char* lastPathSeparator = strrchr(dirPath, '/');
-
-    *lastPathSeparator = 0;
-
-    delete listener;
-
-    EXPECT_NE(stat(dirPath, &info), 0);
+    EXPECT_NE(stat(getDirPath(), &info), 0);
     EXPECT_EQ(errno, ENOENT);
-
-    free(dirPath);
 }
 
-TEST(MemoryTracerListenerTest, implementsTestListener) {
-    testing::TestEventListener* listener = new MemoryTracerListener();
-    delete listener;
+TEST_F(MemoryTracerListenerTest, implementsTestListener) {
+    testing::TestEventListener* superClass = listener;
 }
