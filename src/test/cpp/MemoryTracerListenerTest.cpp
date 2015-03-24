@@ -85,7 +85,10 @@ TEST_F(MemoryTracerListenerTest, setEnvironmentTest) {
 }
 
 TEST_F(MemoryTracerListenerTest, traceFileIsInTempDir) {
-    EXPECT_TRUE(memcmp("/tmp/", getFilePath(), 5) == 0);
+    const char* tempDir = "/tmp/";
+    const int length = strlen(tempDir);
+
+    EXPECT_TRUE(strncmp(tempDir, getFilePath(), length) == 0);
 }
 
 TEST_F(MemoryTracerListenerTest, traceFileDoesntExistYet) {
