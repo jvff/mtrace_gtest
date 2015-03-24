@@ -3,7 +3,7 @@
 
 #include "gtest/gtest.h"
 
-class MemoryTracerListener: public testing::EmptyTestEventListener {
+class MemoryTracerListener : public testing::EmptyTestEventListener {
 private:
     char* mtraceDirName;
     char* mtraceFileName;
