@@ -14,7 +14,7 @@ MemoryTracerListener::MemoryTracerListener() {
 
     if (mkdtemp(mtraceDirName) != NULL && mtraceDirName[0] != 0) {
         memcpy(mtraceFileName, mtraceDirName, strlen(mtraceDirName));
-        setenv(ENVIRONMENT_VARIABLE, mtraceFileName, 0);
+        setenv(ENVIRONMENT_VARIABLE, mtraceFileName, 1);
     }
 }
 
