@@ -5,5 +5,5 @@
 #define ENVIRONMENT_VARIABLE "MALLOC_TRACE"
 
 MemoryTracerListener::MemoryTracerListener() {
-    setenv(ENVIRONMENT_VARIABLE, "", 0);
+    setenv(ENVIRONMENT_VARIABLE, "/tmp/", 0);
 }
