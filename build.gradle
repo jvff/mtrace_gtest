@@ -17,13 +17,18 @@ model {
     }
 
     components {
-        mtrace_gtest(NativeLibrarySpec)
+        mtrace_gtest(NativeLibrarySpec) {
+            sources.cpp.exportedHeaders {
+                srcDir 'include/mtrace_gtest/cpp'
+                include '**/*.hpp'
+            }
+        }
         test(NativeExecutableSpec) {
             binaries.all {
                 linker.args "-pthread"
             }
             sources.cpp {
-                lib mtrace_gtest
+                lib library: 'mtrace_gtest', linkage: 'static'
                 lib library: 'gtest', linkage: 'static'
                 lib library: 'gtest_main', linkage: 'static'
             }
