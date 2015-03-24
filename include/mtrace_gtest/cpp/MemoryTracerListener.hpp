@@ -1,7 +1,9 @@
 #ifndef MEMORY_TRACER_LISTENER_HPP
 #define MEMORY_TRACER_LISTENER_HPP
 
-class MemoryTracerListener {
+#include "gtest/gtest.h"
+
+class MemoryTracerListener: public testing::EmptyTestEventListener {
 private:
     char* mtraceFileName;
 
