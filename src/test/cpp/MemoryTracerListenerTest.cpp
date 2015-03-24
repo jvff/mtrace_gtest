@@ -4,15 +4,21 @@
 
 #include "MemoryTracerListener.hpp"
 
-TEST(MemoryTracerListenerTest, setEnvironmentTest) {
-    const char environmentVariable[] = "MALLOC_TRACE";
+#define ENV_VAR "MALLOC_TRACE"
 
+TEST(MemoryTracerListenerTest, setEnvironmentTest) {
     MemoryTracerListener* listener;
 
-    unsetenv(environmentVariable);
+    unsetenv(ENV_VAR);
     listener = new MemoryTracerListener();
 
-    EXPECT_FALSE(getenv(environmentVariable) == NULL);
+    EXPECT_FALSE(getenv(ENV_VAR) == NULL);
 
     delete listener;
+}
+
+TEST(MemoryTracerListenerTest, traceFileIsInTempDir) {
+    MemoryTracerListener listener;
+
+    EXPECT_TRUE(memcmp("/tmp/", getenv(ENV_VAR), 5) == 0);
 }
