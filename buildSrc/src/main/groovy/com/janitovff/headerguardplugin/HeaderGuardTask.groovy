@@ -23,8 +23,10 @@ public class HeaderGuardTask extends DefaultTask  {
         failures.clear()
 
         for (def sourceSet : project.sources) {
-            for (def languageSourceSet : sourceSet)
+            for (def languageSourceSet : sourceSet) {
                 checkHeadersIn(languageSourceSet.source)
+                checkHeadersIn(languageSourceSet.exportedHeaders)
+            }
         }
     }
 
