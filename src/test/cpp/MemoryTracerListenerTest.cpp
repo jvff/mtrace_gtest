@@ -34,3 +34,18 @@ TEST(MemoryTracerListenerTest, traceFileDoesntExistYet) {
     EXPECT_NE(stat(getenv(ENV_VAR), &info), 0);
     EXPECT_EQ(errno, ENOENT);
 }
+
+TEST(MemoryTracerListenerTest, traceFileHasPrefix) {
+    MemoryTracerListener listener;
+    const char* fileName = getenv(ENV_VAR);
+    const char* expectedPrefix = "/mtrace.";
+    int prefixLength = strlen(expectedPrefix);
+    int wildcardLength = 6;
+    int expectedPrefixPos = strlen(fileName) - wildcardLength - prefixLength;
+
+    ASSERT_GT(expectedPrefixPos, 0);
+
+    const char* prefix = &fileName[expectedPrefixPos];
+
+    EXPECT_TRUE(strncmp(expectedPrefix, prefix, 5) == 0);
+}
