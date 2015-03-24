@@ -49,3 +49,19 @@ TEST(MemoryTracerListenerTest, traceFileNameIsFixed) {
 
     EXPECT_TRUE(strncmp(expectedFileName, fileName, fileNameLength) == 0);
 }
+
+TEST(MemoryTracerListenerTest, traceFileIsInNewTempDir) {
+    MemoryTracerListener listener;
+
+    const char* filePath = getenv(ENV_VAR);
+    const char* expectedDirAndFileName = "/mtrace_gtest.XXXXXX/mtrace";
+    int dirPrefixLength = strlen("/mtrace_gtest.");
+    int fileAndDirNameLength = strlen(expectedDirAndFileName);
+    int expectedDirNamePos = strlen(filePath) - fileAndDirNameLength;
+
+    ASSERT_GT(expectedDirNamePos, 0);
+
+    const char* dirName = &filePath[expectedDirNamePos];
+
+    EXPECT_TRUE(strncmp(expectedDirAndFileName, dirName, dirPrefixLength) == 0);
+}
