@@ -66,6 +66,22 @@ TEST(MemoryTracerListenerTest, traceFileIsInNewTempDir) {
     EXPECT_TRUE(strncmp(expectedDirAndFileName, dirName, dirPrefixLength) == 0);
 }
 
+TEST(MemoryTracerListenerTest, tempDirExists) {
+    MemoryTracerListener listener;
+    struct stat info;
+
+    const char* filePath = getenv(ENV_VAR);
+    char* dirPath = strdup(filePath);
+    char* lastPathSeparator = strrchr(dirPath, '/');
+
+    *lastPathSeparator = 0;
+
+    EXPECT_EQ(stat(dirPath, &info), 0);
+    EXPECT_TRUE(S_ISDIR(info.st_mode));
+
+    free(dirPath);
+}
+
 TEST(MemoryTracerListenerTest, tempDirIsDeletedAfterDestruction) {
     struct stat info;
 
