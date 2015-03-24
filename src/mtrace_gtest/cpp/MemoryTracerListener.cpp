@@ -5,10 +5,17 @@
 #include "MemoryTracerListener.hpp"
 
 #define ENVIRONMENT_VARIABLE "MALLOC_TRACE"
+#define DIRNAME_TEMPLATE "/tmp/mtrace_gtest.XXXXXX"
 
 MemoryTracerListener::MemoryTracerListener() {
-    mtraceFileName = strdup("/tmp/mtrace.XXXXXX");
+    char* dirName = strdup(DIRNAME_TEMPLATE);
 
-    if (mktemp(mtraceFileName) != NULL && mtraceFileName[0] != 0)
+    mtraceFileName = strdup(DIRNAME_TEMPLATE "/mtrace");
+
+    if (mkdtemp(dirName) != NULL && dirName[0] != 0) {
+        memcpy(mtraceFileName, dirName, strlen(dirName));
         setenv(ENVIRONMENT_VARIABLE, mtraceFileName, 0);
+    }
+
+    free(dirName);
 }
