@@ -136,3 +136,14 @@ TEST_F(MemoryTracerListenerTest, tempDirIsDeletedAfterDestruction) {
 TEST_F(MemoryTracerListenerTest, implementsTestListener) {
     testing::TestEventListener* superClass = listener;
 }
+
+TEST_F(MemoryTracerListenerTest, traceFileIsCreatedWhenTestStarts) {
+    const testing::UnitTest* unitTest = testing::UnitTest::GetInstance();
+    const testing::TestInfo* testInfo = unitTest->current_test_info();
+    struct stat info;
+
+    listener->OnTestStart(*testInfo);
+
+    EXPECT_EQ(stat(getFilePath(), &info), 0);
+    EXPECT_TRUE(S_ISREG(info.st_mode));
+}
