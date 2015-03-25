@@ -8,6 +8,7 @@
 class TraceFileParserTest : public testing::Test {
 private:
     const char* currentAllocation;
+    char* traceFileName;
     int traceFileDescriptor;
 
 protected:
@@ -15,14 +16,13 @@ protected:
     TraceFileParser* parser;
 
     virtual void SetUp() {
-        char tempFile[] = "/tmp/fake_mtrace.XXXXXX";
-
-        traceFileDescriptor = mkstemp(tempFile);
+        traceFileName = strdup("/tmp/fake_mtrace.XXXXXX");
+        traceFileDescriptor = mkstemp(traceFileName);
         traceFile = fdopen(traceFileDescriptor, "w+");
 
         currentAllocation = (const char*)0x10000000;
 
-        parser = new TraceFileParser(tempFile);
+        parser = new TraceFileParser(traceFileName);
     }
 
     virtual void TearDown() {
@@ -30,6 +30,9 @@ protected:
             closeTraceFile();
 
         delete parser;
+
+        unlink(traceFileName);
+        free(traceFileName);
     }
 
     virtual const void* alloc(int size) {
