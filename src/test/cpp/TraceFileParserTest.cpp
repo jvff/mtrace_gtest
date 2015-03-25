@@ -7,6 +7,7 @@
 
 class TraceFileParserTest : public testing::Test {
 private:
+    const char* currentAllocation;
     int traceFileDescriptor;
 
 protected:
@@ -19,6 +20,8 @@ protected:
         traceFileDescriptor = mkstemp(tempFile);
         traceFile = fdopen(traceFileDescriptor, "w+");
 
+        currentAllocation = (const char*)0x10000000;
+
         parser = new TraceFileParser(tempFile);
     }
 
@@ -27,6 +30,20 @@ protected:
             closeTraceFile();
 
         delete parser;
+    }
+
+    virtual const void* alloc(int size) {
+        const void* address = (const void*)currentAllocation;
+
+        currentAllocation += size;
+
+        fprintf(traceFile, "[0x0] + %p %#x\n", address, size);
+
+        return address;
+    }
+
+    virtual void dealloc(const void* address) {
+        fprintf(traceFile, "[0x0] - %p\n", address);
     }
 
     virtual void closeTraceFile() {
@@ -51,5 +68,13 @@ protected:
 };
 
 TEST_F(TraceFileParserTest, noAllocations) {
+    parseAndExpect(0, 0, 0);
+}
+
+TEST_F(TraceFileParserTest, oneAllocationAndDeallocation) {
+    const void* address = alloc(1);
+
+    dealloc(address);
+
     parseAndExpect(0, 0, 0);
 }
