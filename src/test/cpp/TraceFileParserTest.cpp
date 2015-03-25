@@ -87,3 +87,7 @@ TEST_F(TraceFileParserTest, oneMemoryLeak) {
 
     parseAndExpect(1, 1, 0);
 }
+
+TEST_F(TraceFileParserTest, oneLargerMemoryLeak) {
+    alloc(100);
+}
