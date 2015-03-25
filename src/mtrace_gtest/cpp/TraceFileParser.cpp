@@ -4,8 +4,6 @@
 
 TraceFileParser::TraceFileParser(const char* traceFileName) {
     this->traceFileName = traceFileName;
-
-    allocations = 0;
 }
 
 void TraceFileParser::parse() {
@@ -20,11 +18,12 @@ void TraceFileParser::parse() {
 
 void TraceFileParser::parseLine(std::string line) {
     char type = discoverAllocationType(line);
+    const char* lineString = line.c_str();
 
     if (type == '+')
-        ++allocations;
+        parseAllocation(lineString);
     else if (type == '-')
-        --allocations;
+        parseDeallocation(lineString);
 }
 
 char TraceFileParser::discoverAllocationType(std::string line) {
@@ -36,12 +35,41 @@ char TraceFileParser::discoverAllocationType(std::string line) {
     return line[pos + 2];
 }
 
+void TraceFileParser::parseAllocation(const char* line) {
+    void* position;
+    void* address;
+    int size;
+
+    sscanf(line, "[%p] + %p %x", &position, &address, &size);
+
+    activeAllocations[address] = size;
+}
+
+void TraceFileParser::parseDeallocation(const char* line) {
+    void* position;
+    void* address;
+
+    sscanf(line, "[%p] - %p", &position, &address);
+
+    activeAllocations.erase(address);
+}
+
 int TraceFileParser::getMemoryLeakCount() {
-    return allocations;
+    return activeAllocations.size();
 }
 
 int TraceFileParser::getMemoryLeakSize() {
-    return allocations;
+    if (activeAllocations.size() == 0)
+        return 0;
+
+    int size = 0;
+    std::map<void*, int>::iterator iterator = activeAllocations.begin();
+    std::map<void*, int>::iterator end = activeAllocations.end();
+
+    for (; iterator != end; ++iterator)
+        size += iterator->second;
+
+    return size;
 }
 
 int TraceFileParser::getInvalidDeallocationCount() {
