@@ -11,6 +11,8 @@ private:
 public:
     MemoryTracerListener();
     ~MemoryTracerListener();
+
+    virtual void OnTestStart(const testing::TestInfo& testInfo);
 };
 
 #endif

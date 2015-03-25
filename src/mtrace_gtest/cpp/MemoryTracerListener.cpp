@@ -1,3 +1,4 @@
+#include <mcheck.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -21,4 +22,8 @@ MemoryTracerListener::MemoryTracerListener() {
 MemoryTracerListener::~MemoryTracerListener() {
     unlink(mtraceFileName);
     rmdir(mtraceDirName);
+}
+
+void MemoryTracerListener::OnTestStart(const testing::TestInfo& testInfo) {
+    mtrace();
 }
