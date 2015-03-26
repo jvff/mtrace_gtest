@@ -17,11 +17,15 @@ MemoryTracerListener::MemoryTracerListener() {
         memcpy(mtraceFileName, mtraceDirName, strlen(mtraceDirName));
         setenv(ENVIRONMENT_VARIABLE, mtraceFileName, 1);
     }
+
+    traceFileParser = new TraceFileParser(mtraceFileName);
 }
 
 MemoryTracerListener::~MemoryTracerListener() {
     unlink(mtraceFileName);
     rmdir(mtraceDirName);
+
+    delete traceFileParser;
 }
 
 void MemoryTracerListener::OnTestStart(const testing::TestInfo& testInfo) {

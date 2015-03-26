@@ -3,14 +3,19 @@
 
 #include "gtest/gtest.h"
 
+#include "TraceFileParser.hpp"
+
 class MemoryTracerListener : public testing::EmptyTestEventListener {
 private:
     char* mtraceDirName;
     char* mtraceFileName;
 
+protected:
+    TraceFileParser* traceFileParser;
+
 public:
     MemoryTracerListener();
-    ~MemoryTracerListener();
+    virtual ~MemoryTracerListener();
 
     virtual void OnTestStart(const testing::TestInfo& testInfo);
 };
