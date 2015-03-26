@@ -8,9 +8,14 @@ model {
                     staticLibraryFile = file("/usr/lib/x86_64-linux-gnu/libgtest.a")
                 }
             }
-            gtest_main {
+            gmock {
                 binaries.withType(StaticLibraryBinary) {
-                    staticLibraryFile = file("/usr/lib/x86_64-linux-gnu/libgtest_main.a")
+                    staticLibraryFile = file("/usr/lib/x86_64-linux-gnu/libgmock.a")
+                }
+            }
+            gmock_main {
+                binaries.withType(StaticLibraryBinary) {
+                    staticLibraryFile = file("/usr/lib/x86_64-linux-gnu/libgmock_main.a")
                 }
             }
         }
@@ -30,7 +35,8 @@ model {
             sources.cpp {
                 lib library: 'mtrace_gtest', linkage: 'static'
                 lib library: 'gtest', linkage: 'static'
-                lib library: 'gtest_main', linkage: 'static'
+                lib library: 'gmock', linkage: 'static'
+                lib library: 'gmock_main', linkage: 'static'
             }
         }
     }
