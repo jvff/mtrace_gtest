@@ -6,7 +6,7 @@
 
 #include "gtest/gtest.h"
 
-#include "MemoryTracerListener.hpp"
+#include "FakeMemoryTracerListener.hpp"
 
 class MemoryTracerListenerTest : public testing::Test {
 private:
@@ -14,7 +14,7 @@ private:
     char* dirPath;
 
 protected:
-    MemoryTracerListener* listener;
+    FakeMemoryTracerListener* listener;
 
     virtual void SetUp() {
         dirPath = NULL;
@@ -22,7 +22,7 @@ protected:
         environmentVariable = "MALLOC_TRACE";
         unsetenv(environmentVariable);
 
-        listener = new MemoryTracerListener();
+        listener = new FakeMemoryTracerListener();
     }
 
     virtual void TearDown() {

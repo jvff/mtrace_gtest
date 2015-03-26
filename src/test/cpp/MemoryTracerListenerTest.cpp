@@ -71,3 +71,9 @@ TEST_F(MemoryTracerListenerTest, traceFileIsCreatedWhenTestStarts) {
     EXPECT_EQ(stat(getFilePath(), &info), 0);
     EXPECT_TRUE(S_ISREG(info.st_mode));
 }
+
+TEST_F(MemoryTracerListenerTest, listenerInitializesParser) {
+    TraceFileParser* parser = listener->getParser();
+
+    EXPECT_TRUE(parser != NULL);
+}
