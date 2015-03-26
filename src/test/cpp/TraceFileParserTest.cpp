@@ -91,3 +91,10 @@ TEST_F(TraceFileParserTest, oneMemoryLeak) {
 TEST_F(TraceFileParserTest, oneLargerMemoryLeak) {
     alloc(100);
 }
+
+TEST_F(TraceFileParserTest, twoMemoryLeaks) {
+    alloc(10);
+    alloc(70);
+
+    parseAndExpect(2, 80, 0);
+}
