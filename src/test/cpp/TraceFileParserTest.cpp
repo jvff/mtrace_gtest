@@ -106,3 +106,11 @@ TEST_F(TraceFileParserTest, oneMemoryLeakSurrondedByNormalUsage) {
 
     parseAndExpect(1, 10000, 0);
 }
+
+TEST_F(TraceFileParserTest, oneInvalidDeallocation) {
+    const void* address = (const void*)0x08000000;
+
+    dealloc(address);
+
+    parseAndExpect(0, 0, 1);
+}
