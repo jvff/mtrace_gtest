@@ -114,3 +114,12 @@ TEST_F(TraceFileParserTest, oneInvalidDeallocation) {
 
     parseAndExpect(0, 0, 1);
 }
+
+TEST_F(TraceFileParserTest, doubleDeallocation) {
+    const void* address = alloc(15);
+
+    dealloc(address);
+    dealloc(address);
+
+    parseAndExpect(0, 0, 1);
+}
