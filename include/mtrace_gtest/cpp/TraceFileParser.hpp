@@ -7,6 +7,7 @@
 class TraceFileParser {
 private:
     const char* traceFileName;
+    int invalidDeallocations;
     std::map<void*, int> activeAllocations;
 
 public:

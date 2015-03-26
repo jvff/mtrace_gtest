@@ -4,6 +4,8 @@
 
 TraceFileParser::TraceFileParser(const char* traceFileName) {
     this->traceFileName = traceFileName;
+
+    invalidDeallocations = 0;
 }
 
 void TraceFileParser::parse() {
@@ -51,7 +53,8 @@ void TraceFileParser::parseDeallocation(const char* line) {
 
     sscanf(line, "[%p] - %p", &position, &address);
 
-    activeAllocations.erase(address);
+    if (activeAllocations.erase(address) == 0)
+        ++invalidDeallocations;
 }
 
 int TraceFileParser::getMemoryLeakCount() {
@@ -73,5 +76,5 @@ int TraceFileParser::getMemoryLeakSize() {
 }
 
 int TraceFileParser::getInvalidDeallocationCount() {
-    return 0;
+    return invalidDeallocations;
 }
