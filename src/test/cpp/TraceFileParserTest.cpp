@@ -56,8 +56,10 @@ TEST_F(TraceFileParserTest, doubleDeallocation) {
 
 TEST_F(TraceFileParserTest, invalidDeallocationAndMemoryLeak) {
     const void* address = alloc(4096);
+    const char* byteAddress = (const char*)address;
+    const void* invalidAddress = (const void*)(byteAddress - 65536);
 
-    dealloc(address - 65536);
+    dealloc(invalidAddress);
 
     parseAndExpect(1, 4096, 1);
 }
