@@ -98,3 +98,11 @@ TEST_F(TraceFileParserTest, twoMemoryLeaks) {
 
     parseAndExpect(2, 80, 0);
 }
+
+TEST_F(TraceFileParserTest, oneMemoryLeakSurrondedByNormalUsage) {
+    const void* address = alloc(1000);
+    alloc(10000);
+    dealloc(address);
+
+    parseAndExpect(1, 10000, 0);
+}
