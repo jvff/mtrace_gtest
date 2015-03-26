@@ -6,11 +6,9 @@
 #include "TraceFileParser.hpp"
 
 class MemoryTracerListener : public testing::EmptyTestEventListener {
-private:
+protected:
     char* mtraceDirName;
     char* mtraceFileName;
-
-protected:
     TraceFileParser* traceFileParser;
 
 public:

@@ -13,11 +13,11 @@ private:
 public:
     TraceFileParser(const char* traceFileName);
 
-    void parse();
+    virtual void parse();
 
-    int getMemoryLeakCount();
-    int getMemoryLeakSize();
-    int getInvalidDeallocationCount();
+    virtual int getMemoryLeakCount();
+    virtual int getMemoryLeakSize();
+    virtual int getInvalidDeallocationCount();
 
 private:
     void parseLine(std::string line);
