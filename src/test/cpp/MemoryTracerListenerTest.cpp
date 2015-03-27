@@ -115,3 +115,16 @@ TEST_F(MemoryTracerListenerTest, oneMemoryLeak) {
 
     listener->checkTraceResults();
 }
+
+TEST_F(MemoryTracerListenerTest, oneByteMemoryLeak) {
+    const char expectedError[] = "1 memory leak detected. 1 byte total.";
+
+    EXPECT_CALL(*parser, parse()).Times(1);
+    EXPECT_CALL(*parser, getMemoryLeakCount()).Times(1).WillOnce(Return(1));
+    EXPECT_CALL(*parser, getMemoryLeakSize()).Times(1).WillOnce(Return(1));
+    EXPECT_CALL(*parser, getInvalidDeallocationCount()).Times(1)
+            .WillOnce(Return(0));
+    EXPECT_CALL(*reporter, fail(StrEq(expectedError)));
+
+    listener->checkTraceResults();
+}
