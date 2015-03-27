@@ -77,3 +77,17 @@ TEST_F(MemoryTracerListenerTest, listenerInitializesParser) {
 
     EXPECT_TRUE(parser != NULL);
 }
+
+TEST_F(MemoryTracerListenerTest, parserIsCalledWhenTestEnds) {
+    const testing::UnitTest* unitTest = testing::UnitTest::GetInstance();
+    const testing::TestInfo* testInfo = unitTest->current_test_info();
+
+    listener->OnTestStart(*testInfo);
+
+    EXPECT_CALL(*parser, parse()).Times(1);
+    EXPECT_CALL(*parser, getMemoryLeakCount()).Times(1);
+    EXPECT_CALL(*parser, getMemoryLeakSize()).Times(1);
+    EXPECT_CALL(*parser, getInvalidDeallocationCount()).Times(1);
+
+    listener->OnTestEnd(*testInfo);
+}
