@@ -19,6 +19,9 @@ public:
 
     virtual void OnTestStart(const testing::TestInfo& testInfo);
     virtual void OnTestEnd(const testing::TestInfo& testInfo);
+
+protected:
+    virtual void checkTraceResults();
 };
 
 #endif
