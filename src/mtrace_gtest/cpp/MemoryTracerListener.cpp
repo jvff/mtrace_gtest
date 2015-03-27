@@ -18,6 +18,7 @@ MemoryTracerListener::MemoryTracerListener() {
         setenv(ENVIRONMENT_VARIABLE, mtraceFileName, 1);
     }
 
+    failureReporter = new FailureReporter();
     traceFileParser = new TraceFileParser(mtraceFileName);
 }
 
@@ -26,6 +27,7 @@ MemoryTracerListener::~MemoryTracerListener() {
     rmdir(mtraceDirName);
 
     delete traceFileParser;
+    delete failureReporter;
 }
 
 void MemoryTracerListener::OnTestStart(const testing::TestInfo& testInfo) {
