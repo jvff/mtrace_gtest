@@ -30,6 +30,10 @@ public:
     MockTraceFileParser* getMockParser() {
         return mockParser;
     }
+
+    FailureReporter* getFailureReporter() {
+        return failureReporter;
+    }
 };
 
 #endif

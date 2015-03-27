@@ -91,3 +91,9 @@ TEST_F(MemoryTracerListenerTest, parserIsCalledWhenTestEnds) {
 
     listener->OnTestEnd(*testInfo);
 }
+
+TEST_F(MemoryTracerListenerTest, reporterIsInitialized) {
+    FailureReporter *reporter = listener->getFailureReporter();
+
+    EXPECT_TRUE(reporter != NULL);
+}
