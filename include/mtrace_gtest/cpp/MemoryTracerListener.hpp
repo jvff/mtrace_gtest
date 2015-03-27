@@ -1,6 +1,8 @@
 #ifndef MEMORY_TRACER_LISTENER_HPP
 #define MEMORY_TRACER_LISTENER_HPP
 
+#include <iostream>
+
 #include "gtest/gtest.h"
 
 #include "FailureReporter.hpp"
@@ -26,6 +28,8 @@ protected:
 private:
     void fail(int memoryLeakCount, int memoryLeakSize,
             int invalidDeallocationCount);
+    void buildMemoryLeakErrorMessage(std::ostream& errorMessage, int count,
+            int size);
 };
 
 #endif

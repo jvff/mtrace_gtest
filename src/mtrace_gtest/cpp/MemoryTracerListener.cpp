@@ -57,9 +57,13 @@ void MemoryTracerListener::fail(int memoryLeakCount, int memoryLeakSize,
         int invalidDeallocationCount) {
     std::stringstream errorMessage;
 
-    errorMessage << memoryLeakCount << " memory leak detected. ";
-    errorMessage << memoryLeakSize
-            << (memoryLeakSize == 1 ? " byte total." : " bytes total.");
+    buildMemoryLeakErrorMessage(errorMessage, memoryLeakCount, memoryLeakSize);
 
     failureReporter->fail(errorMessage.str().c_str());
+}
+
+void MemoryTracerListener::buildMemoryLeakErrorMessage(
+        std::ostream& errorMessage, int count, int size) {
+    errorMessage << count << " memory leak detected. ";
+    errorMessage << size << (size == 1 ? " byte total." : " bytes total.");
 }
