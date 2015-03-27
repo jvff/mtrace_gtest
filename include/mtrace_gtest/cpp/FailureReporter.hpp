@@ -5,7 +5,7 @@
 
 class FailureReporter {
 public:
-    void fail(const char* errorMessage) {
+    virtual void fail(const char* errorMessage) {
         FAIL() << errorMessage;
     }
 };

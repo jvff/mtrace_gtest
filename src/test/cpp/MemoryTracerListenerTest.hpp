@@ -9,6 +9,8 @@
 #include "FakeMemoryTracerListener.hpp"
 #include "MockTraceFileParser.hpp"
 
+using testing::_;
+
 class MemoryTracerListenerTest : public testing::Test {
 private:
     const char* environmentVariable;
@@ -17,6 +19,7 @@ private:
 protected:
     FakeMemoryTracerListener* listener;
     MockTraceFileParser* parser;
+    MockFailureReporter* reporter;
 
     virtual void SetUp() {
         dirPath = NULL;
@@ -26,11 +29,13 @@ protected:
 
         listener = new FakeMemoryTracerListener();
         parser = listener->getMockParser();
+        reporter = listener->getMockFailureReporter();
 
         EXPECT_CALL(*parser, parse()).Times(0);
         EXPECT_CALL(*parser, getMemoryLeakCount()).Times(0);
         EXPECT_CALL(*parser, getMemoryLeakSize()).Times(0);
         EXPECT_CALL(*parser, getInvalidDeallocationCount()).Times(0);
+        EXPECT_CALL(*reporter, fail(_)).Times(0);
     }
 
     virtual void TearDown() {
