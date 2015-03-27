@@ -39,8 +39,26 @@ void MemoryTracerListener::OnTestEnd(const testing::TestInfo& testInfo) {
 }
 
 void MemoryTracerListener::checkTraceResults() {
+    int memoryLeakCount;
+    int memoryLeakSize;
+    int invalidDeallocationCount;
+
     traceFileParser->parse();
-    traceFileParser->getMemoryLeakCount();
-    traceFileParser->getMemoryLeakSize();
-    traceFileParser->getInvalidDeallocationCount();
+
+    memoryLeakCount = traceFileParser->getMemoryLeakCount();
+    memoryLeakSize = traceFileParser->getMemoryLeakSize();
+    invalidDeallocationCount = traceFileParser->getInvalidDeallocationCount();
+
+    if (memoryLeakCount != 0 || invalidDeallocationCount != 0)
+        fail(memoryLeakCount, memoryLeakSize, invalidDeallocationCount);
+}
+
+void MemoryTracerListener::fail(int memoryLeakCount, int memoryLeakSize,
+        int invalidDeallocationCount) {
+    std::stringstream errorMessage;
+
+    errorMessage << memoryLeakCount << " memory leak detected. ";
+    errorMessage << memoryLeakSize << " bytes total.";
+
+    failureReporter->fail(errorMessage.str().c_str());
 }

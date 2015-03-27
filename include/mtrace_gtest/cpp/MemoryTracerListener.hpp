@@ -22,6 +22,10 @@ public:
 
 protected:
     virtual void checkTraceResults();
+
+private:
+    void fail(int memoryLeakCount, int memoryLeakSize,
+            int invalidDeallocationCount);
 };
 
 #endif
