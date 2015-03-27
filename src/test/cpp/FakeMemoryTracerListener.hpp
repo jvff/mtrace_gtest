@@ -1,51 +1,38 @@
 #ifndef FAKE_MEMORY_TRACER_LISTENER_HPP
 #define FAKE_MEMORY_TRACER_LISTENER_HPP
 
+#include "Interceptor.hpp"
 #include "MemoryTracerListener.hpp"
 #include "MockFailureReporter.hpp"
 #include "MockTraceFileParser.hpp"
 
+#define MOCK_INTERCEPT(x) Interceptor<x, Mock ## x>
+
 class FakeMemoryTracerListener : public MemoryTracerListener {
 private:
-    FailureReporter* originalFailureReporter;
-    MockFailureReporter* mockFailureReporter;
-    MockTraceFileParser* mockParser;
-    TraceFileParser* originalParser;
+    MOCK_INTERCEPT(FailureReporter) reporter;
+    MOCK_INTERCEPT(TraceFileParser) parser;
 
 public:
-    FakeMemoryTracerListener() {
-        mockFailureReporter = new MockFailureReporter();
-        mockParser = new MockTraceFileParser(mtraceFileName);
-
-        originalFailureReporter = failureReporter;
-        failureReporter = mockFailureReporter;
-
-        originalParser = traceFileParser;
-        traceFileParser = mockParser;
-    }
-
-    ~FakeMemoryTracerListener() {
-        failureReporter = originalFailureReporter;
-        traceFileParser = originalParser;
-
-        delete mockFailureReporter;
-        delete mockParser;
+    FakeMemoryTracerListener() :
+            reporter(failureReporter, new MockFailureReporter()),
+            parser(traceFileParser, new MockTraceFileParser(mtraceFileName)) {
     }
 
     TraceFileParser* getParser() {
-        return traceFileParser;
+        return parser.getOriginal();
     }
 
     MockTraceFileParser* getMockParser() {
-        return mockParser;
+        return parser.getReplacement();
     }
 
     FailureReporter* getFailureReporter() {
-        return failureReporter;
+        return reporter.getOriginal();
     }
 
     MockFailureReporter* getMockFailureReporter() {
-        return mockFailureReporter;
+        return reporter.getReplacement();
     }
 };
 
