@@ -58,7 +58,8 @@ void MemoryTracerListener::fail(int memoryLeakCount, int memoryLeakSize,
     std::stringstream errorMessage;
 
     errorMessage << memoryLeakCount << " memory leak detected. ";
-    errorMessage << memoryLeakSize << " bytes total.";
+    errorMessage << memoryLeakSize
+            << (memoryLeakSize == 1 ? " byte total." : " bytes total.");
 
     failureReporter->fail(errorMessage.str().c_str());
 }
