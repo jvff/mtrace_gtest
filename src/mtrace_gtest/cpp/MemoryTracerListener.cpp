@@ -31,3 +31,10 @@ MemoryTracerListener::~MemoryTracerListener() {
 void MemoryTracerListener::OnTestStart(const testing::TestInfo& testInfo) {
     mtrace();
 }
+
+void MemoryTracerListener::OnTestEnd(const testing::TestInfo& testInfo) {
+    traceFileParser->parse();
+    traceFileParser->getMemoryLeakCount();
+    traceFileParser->getMemoryLeakSize();
+    traceFileParser->getInvalidDeallocationCount();
+}

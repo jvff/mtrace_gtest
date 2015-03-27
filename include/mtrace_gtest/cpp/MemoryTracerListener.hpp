@@ -16,6 +16,7 @@ public:
     virtual ~MemoryTracerListener();
 
     virtual void OnTestStart(const testing::TestInfo& testInfo);
+    virtual void OnTestEnd(const testing::TestInfo& testInfo);
 };
 
 #endif
