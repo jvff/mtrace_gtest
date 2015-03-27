@@ -10,11 +10,13 @@
 
 class FakeMemoryTracerListener : public MemoryTracerListener {
 private:
+    int timesCheckTraceResultsWasCalled;
+
     MOCK_INTERCEPT(FailureReporter) reporter;
     MOCK_INTERCEPT(TraceFileParser) parser;
 
 public:
-    FakeMemoryTracerListener() :
+    FakeMemoryTracerListener() : timesCheckTraceResultsWasCalled(0),
             reporter(failureReporter, new MockFailureReporter()),
             parser(traceFileParser, new MockTraceFileParser(mtraceFileName)) {
     }
@@ -33,6 +35,15 @@ public:
 
     MockFailureReporter* getMockFailureReporter() {
         return reporter.getReplacement();
+    }
+
+    void checkTraceResults() {
+        ++timesCheckTraceResultsWasCalled;
+        MemoryTracerListener::checkTraceResults();
+    }
+
+    int getTimesCheckTraceResultsWasCalled() {
+        return timesCheckTraceResultsWasCalled;
     }
 };
 

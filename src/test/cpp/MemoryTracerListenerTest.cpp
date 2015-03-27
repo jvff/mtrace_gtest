@@ -90,6 +90,8 @@ TEST_F(MemoryTracerListenerTest, parserIsCalledWhenTestEnds) {
     EXPECT_CALL(*parser, getInvalidDeallocationCount()).Times(1);
 
     listener->OnTestEnd(*testInfo);
+
+    EXPECT_EQ(1, listener->getTimesCheckTraceResultsWasCalled());
 }
 
 TEST_F(MemoryTracerListenerTest, reporterIsInitialized) {
