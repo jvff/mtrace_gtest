@@ -64,6 +64,9 @@ void MemoryTracerListener::fail(int memoryLeakCount, int memoryLeakSize,
 
 void MemoryTracerListener::buildMemoryLeakErrorMessage(
         std::ostream& errorMessage, int count, int size) {
-    errorMessage << count << " memory leak detected. ";
+    static const char countSingular[] = " memory leak detected. ";
+    static const char countPlural[] = " memory leaks detected. ";
+
+    errorMessage << count << (count == 1 ? countSingular :  countPlural);
     errorMessage << size << (size == 1 ? " byte total." : " bytes total.");
 }
