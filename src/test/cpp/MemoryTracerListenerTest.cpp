@@ -4,9 +4,6 @@
 
 #include "MemoryTracerListenerTest.hpp"
 
-using testing::Return;
-using testing::StrEq;
-
 TEST_F(MemoryTracerListenerTest, setEnvironmentTest) {
     EXPECT_FALSE(getEnvironmentVariable() == NULL);
 }
@@ -104,27 +101,9 @@ TEST_F(MemoryTracerListenerTest, reporterIsInitialized) {
 }
 
 TEST_F(MemoryTracerListenerTest, oneMemoryLeak) {
-    const char expectedError[] = "1 memory leak detected. 10 bytes total.";
-
-    EXPECT_CALL(*parser, parse()).Times(1);
-    EXPECT_CALL(*parser, getMemoryLeakCount()).Times(1).WillOnce(Return(1));
-    EXPECT_CALL(*parser, getMemoryLeakSize()).Times(1).WillOnce(Return(10));
-    EXPECT_CALL(*parser, getInvalidDeallocationCount()).Times(1)
-            .WillOnce(Return(0));
-    EXPECT_CALL(*reporter, fail(StrEq(expectedError)));
-
-    listener->checkTraceResults();
+    testTraceResults(1, 10, 0, "1 memory leak detected. 10 bytes total.");
 }
 
 TEST_F(MemoryTracerListenerTest, oneByteMemoryLeak) {
-    const char expectedError[] = "1 memory leak detected. 1 byte total.";
-
-    EXPECT_CALL(*parser, parse()).Times(1);
-    EXPECT_CALL(*parser, getMemoryLeakCount()).Times(1).WillOnce(Return(1));
-    EXPECT_CALL(*parser, getMemoryLeakSize()).Times(1).WillOnce(Return(1));
-    EXPECT_CALL(*parser, getInvalidDeallocationCount()).Times(1)
-            .WillOnce(Return(0));
-    EXPECT_CALL(*reporter, fail(StrEq(expectedError)));
-
-    listener->checkTraceResults();
+    testTraceResults(1, 1, 0, "1 memory leak detected. 1 byte total.");
 }

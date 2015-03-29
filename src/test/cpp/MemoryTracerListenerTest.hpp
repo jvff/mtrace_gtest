@@ -10,6 +10,8 @@
 #include "MockTraceFileParser.hpp"
 
 using testing::_;
+using testing::Return;
+using testing::StrEq;
 
 class MemoryTracerListenerTest : public testing::Test {
 private:
@@ -90,6 +92,20 @@ protected:
         const char* dirName = strrchr(dirPath, '/');
 
         return dirName == NULL ? dirPath : dirName + 1;
+    }
+
+    void testTraceResults(int memoryLeakCount, int memoryLeakSize,
+            int invalidDeallocationCount, const char* expectedError) {
+        EXPECT_CALL(*parser, parse()).Times(1);
+        EXPECT_CALL(*parser, getMemoryLeakCount()).Times(1)
+                .WillRepeatedly(Return(memoryLeakCount));
+        EXPECT_CALL(*parser, getMemoryLeakSize()).Times(1)
+                .WillRepeatedly(Return(memoryLeakSize));
+        EXPECT_CALL(*parser, getInvalidDeallocationCount()).Times(1)
+                .WillRepeatedly(Return(invalidDeallocationCount));
+        EXPECT_CALL(*reporter, fail(StrEq(expectedError)));
+
+        listener->checkTraceResults();
     }
 };
 
