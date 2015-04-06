@@ -119,3 +119,8 @@ TEST_F(MemoryTracerListenerTest, oneInvalidDeallocation) {
 TEST_F(MemoryTracerListenerTest, twoInvalidDeallocations) {
     testTraceResults(0, 0, 2, "2 invalid memory deallocations detected.");
 }
+
+TEST_F(MemoryTracerListenerTest, oneMemoryLeakAndOneInvalidDeallocation) {
+    testTraceResults(1, 56, 1, "1 memory leak detected. 56 bytes total."
+            " 1 invalid memory deallocation detected.");
+}
