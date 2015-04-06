@@ -23,6 +23,8 @@ protected:
         traceFileDescriptor = mkstemp(traceFileName);
         traceFile = fdopen(traceFileDescriptor, "w+");
 
+        fprintf(traceFile, "= Start\n");
+
         currentAllocation = (const char*)0x10000000;
 
         parser = new TraceFileParser(traceFileName);
@@ -53,6 +55,7 @@ protected:
     }
 
     virtual void closeTraceFile() {
+        fprintf(traceFile, "= End\n");
         fclose(traceFile);
         close(traceFileDescriptor);
         traceFile = NULL;
