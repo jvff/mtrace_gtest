@@ -89,7 +89,7 @@ TEST_F(MemoryTracerListenerTest, parserIsCalledWhenTestEnds) {
     EXPECT_EQ(1, listener->getTimesCheckTraceResultsWasCalled());
 }
 
-TEST_F(MemoryTracerListenerTest, traceStopsWhenTestEnds) {
+TEST_F(MemoryTracerListenerTest, traceStopsWhenRequested) {
     const char* filePath = getFilePath();
     const testing::UnitTest* unitTest = testing::UnitTest::GetInstance();
     const testing::TestInfo* testInfo = unitTest->current_test_info();
@@ -98,8 +98,7 @@ TEST_F(MemoryTracerListenerTest, traceStopsWhenTestEnds) {
     struct stat info;
 
     listener->OnTestStart(*testInfo);
-    prepareParserExpectations(0, 0, 0);
-    listener->OnTestEnd(*testInfo);
+    listener->stopTrace();
 
     EXPECT_EQ(stat(filePath, &info), 0);
     modificationTimeBeforeDummyOperations = info.st_mtime;
