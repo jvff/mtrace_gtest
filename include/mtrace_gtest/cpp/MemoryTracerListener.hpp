@@ -30,6 +30,8 @@ private:
             int invalidDeallocationCount);
     void buildMemoryLeakErrorMessage(std::ostream& errorMessage, int count,
             int size);
+    void buildInvalidDeallocationErrorMessage(std::ostream& errorMessage,
+            int count);
 };
 
 #endif

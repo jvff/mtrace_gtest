@@ -58,6 +58,8 @@ void MemoryTracerListener::fail(int memoryLeakCount, int memoryLeakSize,
     std::stringstream errorMessage;
 
     buildMemoryLeakErrorMessage(errorMessage, memoryLeakCount, memoryLeakSize);
+    buildInvalidDeallocationErrorMessage(errorMessage,
+            invalidDeallocationCount);
 
     failureReporter->fail(errorMessage.str().c_str());
 }
@@ -67,6 +69,14 @@ void MemoryTracerListener::buildMemoryLeakErrorMessage(
     static const char countSingular[] = " memory leak detected. ";
     static const char countPlural[] = " memory leaks detected. ";
 
-    errorMessage << count << (count == 1 ? countSingular :  countPlural);
-    errorMessage << size << (size == 1 ? " byte total." : " bytes total.");
+    if (count > 0) {
+        errorMessage << count << (count == 1 ? countSingular :  countPlural);
+        errorMessage << size << (size == 1 ? " byte total." : " bytes total.");
+    }
+}
+
+void MemoryTracerListener::buildInvalidDeallocationErrorMessage(
+        std::ostream& errorMessage, int count) {
+    if (count > 0)
+        errorMessage << "1 invalid memory deallocation detected.";
 }
