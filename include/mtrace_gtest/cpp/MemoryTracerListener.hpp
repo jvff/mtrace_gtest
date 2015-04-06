@@ -23,6 +23,7 @@ public:
     virtual void OnTestEnd(const testing::TestInfo& testInfo);
 
 protected:
+    virtual void stopTrace();
     virtual void checkTraceResults();
 
 private:

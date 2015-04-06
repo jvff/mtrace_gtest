@@ -39,6 +39,10 @@ void MemoryTracerListener::OnTestEnd(const testing::TestInfo& testInfo) {
     checkTraceResults();
 }
 
+void MemoryTracerListener::stopTrace() {
+    muntrace();
+}
+
 void MemoryTracerListener::checkTraceResults() {
     int memoryLeakCount;
     int memoryLeakSize;
