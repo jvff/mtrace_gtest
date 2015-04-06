@@ -58,6 +58,8 @@ void MemoryTracerListener::fail(int memoryLeakCount, int memoryLeakSize,
     std::stringstream errorMessage;
 
     buildMemoryLeakErrorMessage(errorMessage, memoryLeakCount, memoryLeakSize);
+    addOptionalSeparator(errorMessage, memoryLeakCount,
+            invalidDeallocationCount);
     buildInvalidDeallocationErrorMessage(errorMessage,
             invalidDeallocationCount);
 
@@ -73,6 +75,12 @@ void MemoryTracerListener::buildMemoryLeakErrorMessage(
         errorMessage << count << (count == 1 ? countSingular :  countPlural);
         errorMessage << size << (size == 1 ? " byte total." : " bytes total.");
     }
+}
+
+void MemoryTracerListener::addOptionalSeparator(std::ostream& errorMessage,
+        int memoryLeakCount, int invalidDeallocationCount) {
+    if (memoryLeakCount > 0 && invalidDeallocationCount > 0)
+        errorMessage << " ";
 }
 
 void MemoryTracerListener::buildInvalidDeallocationErrorMessage(

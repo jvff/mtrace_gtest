@@ -30,6 +30,8 @@ private:
             int invalidDeallocationCount);
     void buildMemoryLeakErrorMessage(std::ostream& errorMessage, int count,
             int size);
+    void addOptionalSeparator(std::ostream& errorMessage, int memoryLeakCount,
+            int invalidDeallocationCount);
     void buildInvalidDeallocationErrorMessage(std::ostream& errorMessage,
             int count);
 };
