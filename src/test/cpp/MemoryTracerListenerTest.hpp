@@ -94,8 +94,8 @@ protected:
         return dirName == NULL ? dirPath : dirName + 1;
     }
 
-    void testTraceResults(int memoryLeakCount, int memoryLeakSize,
-            int invalidDeallocationCount, const char* expectedError) {
+    void prepareParserExpectations(int memoryLeakCount, int memoryLeakSize,
+            int invalidDeallocationCount) {
         EXPECT_CALL(*parser, parse()).Times(1);
         EXPECT_CALL(*parser, getMemoryLeakCount()).Times(1)
                 .WillRepeatedly(Return(memoryLeakCount));
@@ -103,6 +103,13 @@ protected:
                 .WillRepeatedly(Return(memoryLeakSize));
         EXPECT_CALL(*parser, getInvalidDeallocationCount()).Times(1)
                 .WillRepeatedly(Return(invalidDeallocationCount));
+    }
+
+    void testTraceResults(int memoryLeakCount, int memoryLeakSize,
+            int invalidDeallocationCount, const char* expectedError) {
+        prepareParserExpectations(memoryLeakCount, memoryLeakSize,
+                invalidDeallocationCount);
+
         EXPECT_CALL(*reporter, fail(StrEq(expectedError)));
 
         listener->checkTraceResults();

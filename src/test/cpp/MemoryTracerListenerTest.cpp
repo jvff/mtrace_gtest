@@ -83,12 +83,7 @@ TEST_F(MemoryTracerListenerTest, parserIsCalledWhenTestEnds) {
     const testing::TestInfo* testInfo = unitTest->current_test_info();
 
     listener->OnTestStart(*testInfo);
-
-    EXPECT_CALL(*parser, parse()).Times(1);
-    EXPECT_CALL(*parser, getMemoryLeakCount()).Times(1);
-    EXPECT_CALL(*parser, getMemoryLeakSize()).Times(1);
-    EXPECT_CALL(*parser, getInvalidDeallocationCount()).Times(1);
-
+    prepareParserExpectations(0, 0, 0);
     listener->OnTestEnd(*testInfo);
 
     EXPECT_EQ(1, listener->getTimesCheckTraceResultsWasCalled());
@@ -104,12 +99,7 @@ TEST_F(MemoryTracerListenerTest, traceStopsWhenTestEnds) {
     void* dummyAddress;
 
     listener->OnTestStart(*testInfo);
-
-    EXPECT_CALL(*parser, parse()).Times(1);
-    EXPECT_CALL(*parser, getMemoryLeakCount()).Times(1);
-    EXPECT_CALL(*parser, getMemoryLeakSize()).Times(1);
-    EXPECT_CALL(*parser, getInvalidDeallocationCount()).Times(1);
-
+    prepareParserExpectations(0, 0, 0);
     listener->OnTestEnd(*testInfo);
 
     EXPECT_EQ(stat(filePath, &info), 0);
