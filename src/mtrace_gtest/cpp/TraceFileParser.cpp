@@ -42,7 +42,7 @@ void TraceFileParser::parseAllocation(const char* line) {
     void* address;
     int size;
 
-    sscanf(line, "[%p] + %p %x", &position, &address, &size);
+    sscanf(line, "@ [%p] + %p %x", &position, &address, &size);
 
     activeAllocations[address] = size;
 }
@@ -51,7 +51,7 @@ void TraceFileParser::parseDeallocation(const char* line) {
     void* position;
     void* address;
 
-    sscanf(line, "[%p] - %p", &position, &address);
+    sscanf(line, "@ [%p] - %p", &position, &address);
 
     if (activeAllocations.erase(address) == 0)
         ++invalidDeallocations;
