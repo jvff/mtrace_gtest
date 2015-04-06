@@ -35,6 +35,7 @@ void MemoryTracerListener::OnTestStart(const testing::TestInfo& testInfo) {
 }
 
 void MemoryTracerListener::OnTestEnd(const testing::TestInfo& testInfo) {
+    muntrace();
     checkTraceResults();
 }
 
