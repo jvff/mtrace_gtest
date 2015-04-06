@@ -77,6 +77,10 @@ void MemoryTracerListener::buildMemoryLeakErrorMessage(
 
 void MemoryTracerListener::buildInvalidDeallocationErrorMessage(
         std::ostream& errorMessage, int count) {
+    static const char countSingular[] = " invalid memory deallocation"
+            " detected.";
+    static const char countPlural[] = " invalid memory deallocations detected.";
+
     if (count > 0)
-        errorMessage << "1 invalid memory deallocation detected.";
+        errorMessage << count << (count == 1 ? countSingular :  countPlural);
 }
