@@ -94,6 +94,41 @@ TEST_F(MemoryTracerListenerTest, parserIsCalledWhenTestEnds) {
     EXPECT_EQ(1, listener->getTimesCheckTraceResultsWasCalled());
 }
 
+TEST_F(MemoryTracerListenerTest, traceStopsWhenTestEnds) {
+    const char* filePath = getFilePath();
+    const testing::UnitTest* unitTest = testing::UnitTest::GetInstance();
+    const testing::TestInfo* testInfo = unitTest->current_test_info();
+    time_t modificationTimeBeforeDummyOperations;
+    time_t modificationTimeAfterDummyOperations;
+    struct stat info;
+    void* dummyAddress;
+
+    listener->OnTestStart(*testInfo);
+
+    EXPECT_CALL(*parser, parse()).Times(1);
+    EXPECT_CALL(*parser, getMemoryLeakCount()).Times(1);
+    EXPECT_CALL(*parser, getMemoryLeakSize()).Times(1);
+    EXPECT_CALL(*parser, getInvalidDeallocationCount()).Times(1);
+
+    listener->OnTestEnd(*testInfo);
+
+    EXPECT_EQ(stat(filePath, &info), 0);
+
+    modificationTimeBeforeDummyOperations = info.st_mtime;
+    dummyAddress = malloc(123);
+
+    EXPECT_TRUE(dummyAddress != NULL);
+
+    free(dummyAddress);
+
+    EXPECT_EQ(stat(filePath, &info), 0);
+
+    modificationTimeAfterDummyOperations = info.st_mtime;
+
+    EXPECT_EQ(modificationTimeBeforeDummyOperations,
+            modificationTimeAfterDummyOperations);
+}
+
 TEST_F(MemoryTracerListenerTest, reporterIsInitialized) {
     FailureReporter *reporter = listener->getFailureReporter();
 
