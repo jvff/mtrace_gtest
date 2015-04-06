@@ -112,6 +112,18 @@ TEST_F(MemoryTracerListenerTest, traceStopsWhenRequested) {
             modificationTimeAfterDummyOperations);
 }
 
+TEST_F(MemoryTracerListenerTest, traceStopsWhenTestEnds) {
+    const testing::UnitTest* unitTest = testing::UnitTest::GetInstance();
+    const testing::TestInfo* testInfo = unitTest->current_test_info();
+
+    listener->OnTestStart(*testInfo);
+    prepareParserExpectations(0, 0, 0);
+    listener->OnTestEnd(*testInfo);
+
+    EXPECT_EQ(1, listener->getTimesStopTraceWasCalled());
+    EXPECT_TRUE(listener->wasStopTraceCalledBeforeCheckTraceResults());
+}
+
 TEST_F(MemoryTracerListenerTest, reporterIsInitialized) {
     FailureReporter *reporter = listener->getFailureReporter();
 

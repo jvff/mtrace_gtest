@@ -10,13 +10,17 @@
 
 class FakeMemoryTracerListener : public MemoryTracerListener {
 private:
+    bool stopTraceWasCalledFirst;
     int timesCheckTraceResultsWasCalled;
+    int timesStopTraceWasCalled;
 
     MOCK_INTERCEPT(FailureReporter) reporter;
     MOCK_INTERCEPT(TraceFileParser) parser;
 
 public:
-    FakeMemoryTracerListener() : timesCheckTraceResultsWasCalled(0),
+    FakeMemoryTracerListener() : stopTraceWasCalledFirst(false),
+            timesCheckTraceResultsWasCalled(0),
+            timesStopTraceWasCalled(0),
             reporter(failureReporter, new MockFailureReporter()),
             parser(traceFileParser, new MockTraceFileParser(mtraceFileName)) {
     }
@@ -44,6 +48,22 @@ public:
 
     int getTimesCheckTraceResultsWasCalled() {
         return timesCheckTraceResultsWasCalled;
+    }
+
+    void stopTrace() {
+        ++timesStopTraceWasCalled;
+        stopTraceWasCalledFirst = stopTraceWasCalledFirst
+                || timesCheckTraceResultsWasCalled == 0;
+
+        MemoryTracerListener::stopTrace();
+    }
+
+    int getTimesStopTraceWasCalled() {
+        return timesStopTraceWasCalled;
+    }
+
+    bool wasStopTraceCalledBeforeCheckTraceResults() {
+        return stopTraceWasCalledFirst;
     }
 };
 
