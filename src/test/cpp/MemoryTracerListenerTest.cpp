@@ -108,6 +108,10 @@ TEST_F(MemoryTracerListenerTest, oneByteMemoryLeak) {
     testTraceResults(1, 1, 0, "1 memory leak detected. 1 byte total.");
 }
 
+TEST_F(MemoryTracerListenerTest, impossibleOneByteMemoryLeak) {
+    testTraceResults(7, 1, 0, "7 memory leaks detected. 1 byte total.");
+}
+
 TEST_F(MemoryTracerListenerTest, twoMemoryLeaks) {
     testTraceResults(2, 30, 0, "2 memory leaks detected. 30 bytes total.");
 }
