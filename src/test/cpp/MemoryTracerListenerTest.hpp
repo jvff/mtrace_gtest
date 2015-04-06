@@ -114,6 +114,14 @@ protected:
 
         listener->checkTraceResults();
     }
+
+    void performDummyAllocationAndDeallocation() {
+        void* dummyAddress = malloc(123);
+
+        EXPECT_TRUE(dummyAddress != NULL);
+
+        free(dummyAddress);
+    }
 };
 
 #endif

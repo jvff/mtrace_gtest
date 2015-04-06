@@ -96,23 +96,17 @@ TEST_F(MemoryTracerListenerTest, traceStopsWhenTestEnds) {
     time_t modificationTimeBeforeDummyOperations;
     time_t modificationTimeAfterDummyOperations;
     struct stat info;
-    void* dummyAddress;
 
     listener->OnTestStart(*testInfo);
     prepareParserExpectations(0, 0, 0);
     listener->OnTestEnd(*testInfo);
 
     EXPECT_EQ(stat(filePath, &info), 0);
-
     modificationTimeBeforeDummyOperations = info.st_mtime;
-    dummyAddress = malloc(123);
 
-    EXPECT_TRUE(dummyAddress != NULL);
-
-    free(dummyAddress);
+    performDummyAllocationAndDeallocation();
 
     EXPECT_EQ(stat(filePath, &info), 0);
-
     modificationTimeAfterDummyOperations = info.st_mtime;
 
     EXPECT_EQ(modificationTimeBeforeDummyOperations,
