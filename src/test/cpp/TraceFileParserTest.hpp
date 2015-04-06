@@ -43,13 +43,13 @@ protected:
 
         currentAllocation += size;
 
-        fprintf(traceFile, "[0x0] + %p %#x\n", address, size);
+        fprintf(traceFile, "@ [0x0] + %p %#x\n", address, size);
 
         return address;
     }
 
     virtual void dealloc(const void* address) {
-        fprintf(traceFile, "[0x0] - %p\n", address);
+        fprintf(traceFile, "@ [0x0] - %p\n", address);
     }
 
     virtual void closeTraceFile() {
