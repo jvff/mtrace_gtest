@@ -28,6 +28,11 @@ model {
                 include '**/*.hpp'
             }
         }
+        mtrace_gtest_main(NativeLibrarySpec) {
+            sources.cpp {
+                lib library: 'mtrace_gtest'
+            }
+        }
         test(NativeExecutableSpec) {
             binaries.all {
                 linker.args "-pthread"
