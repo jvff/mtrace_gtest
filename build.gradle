@@ -44,6 +44,16 @@ model {
                 lib library: 'gmock_main', linkage: 'static'
             }
         }
+        sample(NativeExecutableSpec) {
+            binaries.all {
+                linker.args "-pthread"
+            }
+            sources.cpp {
+                lib library: 'mtrace_gtest_main', linkage: 'static'
+                lib library: 'mtrace_gtest', linkage: 'static'
+                lib library: 'gtest', linkage: 'static'
+            }
+        }
     }
 }
 
