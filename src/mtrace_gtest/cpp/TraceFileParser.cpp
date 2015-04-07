@@ -14,6 +14,8 @@ void TraceFileParser::parse() {
     void *address;
     char type;
 
+    activeAllocations.clear();
+
     while (std::getline(traceFile, line))
         parseLine(line);
 }
