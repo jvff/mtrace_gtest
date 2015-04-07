@@ -65,7 +65,8 @@ TEST_P(TraceFileParserTest, invalidDeallocationAndMemoryLeak) {
 }
 
 const char* debugInformation[] = {
-    ""
+    "",
+    "./a.out:"
 };
 
 INSTANTIATE_TEST_CASE_P(TraceFileParserTestInstantiation, TraceFileParserTest,
