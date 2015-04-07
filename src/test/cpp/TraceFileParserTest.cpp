@@ -64,6 +64,14 @@ TEST_P(TraceFileParserTest, invalidDeallocationAndMemoryLeak) {
     parseAndExpect(1, 4096, 1);
 }
 
+TEST_P(TraceFileParserTest, activeAllocationsAreClearedOnNextParseExecution) {
+    const void* address = alloc(100000000);
+
+    parseAndExpect(1, 100000000, 0);
+    resetTraceFile();
+    parseAndExpect(0, 0, 0);
+}
+
 const char* debugInformation[] = {
     "",
     "./a.out:",

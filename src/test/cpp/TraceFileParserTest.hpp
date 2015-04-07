@@ -1,6 +1,7 @@
 #ifndef TRACE_FILE_PARSER_TEST_HPP
 #define TRACE_FILE_PARSER_TEST_HPP
 
+#include <fcntl.h>
 #include <stdio.h>
 #include <unistd.h>
 
@@ -12,10 +13,10 @@ class TraceFileParserTest : public testing::TestWithParam<const char*> {
 private:
     const char* currentAllocation;
     char* traceFileName;
+    FILE* traceFile;
     int traceFileDescriptor;
 
 protected:
-    FILE* traceFile;
     TraceFileParser* parser;
 
     virtual void SetUp() {
@@ -62,6 +63,16 @@ protected:
         fclose(traceFile);
         close(traceFileDescriptor);
         traceFile = NULL;
+    }
+
+    virtual void resetTraceFile() {
+        if (traceFile != NULL)
+            closeTraceFile();
+
+        traceFileDescriptor = open(traceFileName, O_RDWR | O_TRUNC);
+        traceFile = fdopen(traceFileDescriptor, "w+");
+
+        fprintf(traceFile, "= Start");
     }
 
     virtual void parse() {
