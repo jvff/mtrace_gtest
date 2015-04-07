@@ -66,7 +66,8 @@ TEST_P(TraceFileParserTest, invalidDeallocationAndMemoryLeak) {
 
 const char* debugInformation[] = {
     "",
-    "./a.out:"
+    "./a.out:",
+    "/usr/lib/x86_64-linux-gnu/libstdc++.so.6:(_Znwm+0x1d)"
 };
 
 INSTANTIATE_TEST_CASE_P(TraceFileParserTestInstantiation, TraceFileParserTest,
