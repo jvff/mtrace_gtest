@@ -15,6 +15,7 @@ void TraceFileParser::parse() {
     char type;
 
     activeAllocations.clear();
+    invalidDeallocations = 0;
 
     while (std::getline(traceFile, line))
         parseLine(line);
