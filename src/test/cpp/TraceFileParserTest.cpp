@@ -72,6 +72,16 @@ TEST_P(TraceFileParserTest, activeAllocationsAreClearedOnNextParseExecution) {
     parseAndExpect(0, 0, 0);
 }
 
+TEST_P(TraceFileParserTest, invalidDeallocationsAreClearedOnNextParseCall) {
+    const void* address = (const void*)0x08000000;
+
+    dealloc(address);
+
+    parseAndExpect(0, 0, 1);
+    resetTraceFile();
+    parseAndExpect(0, 0, 0);
+}
+
 const char* debugInformation[] = {
     "",
     "./a.out:",
