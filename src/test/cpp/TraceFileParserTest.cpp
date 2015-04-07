@@ -1,10 +1,10 @@
 #include "TraceFileParserTest.hpp"
 
-TEST_F(TraceFileParserTest, noAllocations) {
+TEST_P(TraceFileParserTest, noAllocations) {
     parseAndExpect(0, 0, 0);
 }
 
-TEST_F(TraceFileParserTest, oneAllocationAndDeallocation) {
+TEST_P(TraceFileParserTest, oneAllocationAndDeallocation) {
     const void* address = alloc(1);
 
     dealloc(address);
@@ -12,24 +12,24 @@ TEST_F(TraceFileParserTest, oneAllocationAndDeallocation) {
     parseAndExpect(0, 0, 0);
 }
 
-TEST_F(TraceFileParserTest, oneMemoryLeak) {
+TEST_P(TraceFileParserTest, oneMemoryLeak) {
     alloc(1);
 
     parseAndExpect(1, 1, 0);
 }
 
-TEST_F(TraceFileParserTest, oneLargerMemoryLeak) {
+TEST_P(TraceFileParserTest, oneLargerMemoryLeak) {
     alloc(100);
 }
 
-TEST_F(TraceFileParserTest, twoMemoryLeaks) {
+TEST_P(TraceFileParserTest, twoMemoryLeaks) {
     alloc(10);
     alloc(70);
 
     parseAndExpect(2, 80, 0);
 }
 
-TEST_F(TraceFileParserTest, oneMemoryLeakSurrondedByNormalUsage) {
+TEST_P(TraceFileParserTest, oneMemoryLeakSurrondedByNormalUsage) {
     const void* address = alloc(1000);
     alloc(10000);
     dealloc(address);
@@ -37,7 +37,7 @@ TEST_F(TraceFileParserTest, oneMemoryLeakSurrondedByNormalUsage) {
     parseAndExpect(1, 10000, 0);
 }
 
-TEST_F(TraceFileParserTest, oneInvalidDeallocation) {
+TEST_P(TraceFileParserTest, oneInvalidDeallocation) {
     const void* address = (const void*)0x08000000;
 
     dealloc(address);
@@ -45,7 +45,7 @@ TEST_F(TraceFileParserTest, oneInvalidDeallocation) {
     parseAndExpect(0, 0, 1);
 }
 
-TEST_F(TraceFileParserTest, doubleDeallocation) {
+TEST_P(TraceFileParserTest, doubleDeallocation) {
     const void* address = alloc(15);
 
     dealloc(address);
@@ -54,7 +54,7 @@ TEST_F(TraceFileParserTest, doubleDeallocation) {
     parseAndExpect(0, 0, 1);
 }
 
-TEST_F(TraceFileParserTest, invalidDeallocationAndMemoryLeak) {
+TEST_P(TraceFileParserTest, invalidDeallocationAndMemoryLeak) {
     const void* address = alloc(4096);
     const char* byteAddress = (const char*)address;
     const void* invalidAddress = (const void*)(byteAddress - 65536);
@@ -63,3 +63,10 @@ TEST_F(TraceFileParserTest, invalidDeallocationAndMemoryLeak) {
 
     parseAndExpect(1, 4096, 1);
 }
+
+const char* debugInformation[] = {
+    ""
+};
+
+INSTANTIATE_TEST_CASE_P(TraceFileParserTestInstantiation, TraceFileParserTest,
+        testing::ValuesIn(debugInformation));

@@ -8,7 +8,7 @@
 
 #include "TraceFileParser.hpp"
 
-class TraceFileParserTest : public testing::Test {
+class TraceFileParserTest : public testing::TestWithParam<const char*> {
 private:
     const char* currentAllocation;
     char* traceFileName;
@@ -41,17 +41,20 @@ protected:
     }
 
     virtual const void* alloc(int size) {
+        const char* debugInfo = GetParam();
         const void* address = (const void*)currentAllocation;
 
         currentAllocation += size;
 
-        fprintf(traceFile, "@ [0x0] + %p %#x\n", address, size);
+        fprintf(traceFile, "@ %s[0x0] + %p %#x\n", debugInfo, address, size);
 
         return address;
     }
 
     virtual void dealloc(const void* address) {
-        fprintf(traceFile, "@ [0x0] - %p\n", address);
+        const char* debugInfo = GetParam();
+
+        fprintf(traceFile, "@ %s[0x0] - %p\n", debugInfo, address);
     }
 
     virtual void closeTraceFile() {
