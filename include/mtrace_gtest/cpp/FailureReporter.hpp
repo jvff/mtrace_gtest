@@ -1,13 +1,8 @@
 #ifndef FAILURE_REPORTER_H
 #define FAILURE_REPORTER_H
 
-#include "gtest/gtest.h"
+#include "FailureReporterTemplate.hpp"
 
-class FailureReporter {
-public:
-    virtual void fail(const char* errorMessage) {
-        FAIL() << errorMessage;
-    }
-};
+DECLARE_FAILURE_REPORTER_CLASS(FailureReporter);
 
 #endif
