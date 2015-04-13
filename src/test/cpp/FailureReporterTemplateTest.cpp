@@ -10,16 +10,18 @@ static std::stringstream* failStream;
 
 #define FAIL() *failStream << ""
 
-#include "FailureReporter.hpp"
+#include "FailureReporterTemplate.hpp"
 
-TEST(FailureReporterTest, failMethod) {
+DECLARE_FAILURE_REPORTER_CLASS(FakeFailureReporter);
+
+TEST(FailureReporterTemplateTest, failMethod) {
     const char* errorMessage = "Test error message";
-    FailureReporter *reporter;
+    FakeFailureReporter *reporter;
     std::stringstream stream;
 
     failStream = &stream;
 
-    reporter = new FailureReporter();
+    reporter = new FakeFailureReporter();
 
     reporter->fail(errorMessage);
 
