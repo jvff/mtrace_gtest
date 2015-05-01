@@ -68,7 +68,7 @@ void MemoryTracerListener::fail(int memoryLeakCount, int memoryLeakSize,
     buildInvalidDeallocationErrorMessage(errorMessage,
             invalidDeallocationCount);
 
-    failureReporter->fail(errorMessage.str().c_str());
+    failureReporter->fail(errorMessage.str());
 }
 
 void MemoryTracerListener::buildMemoryLeakErrorMessage(
