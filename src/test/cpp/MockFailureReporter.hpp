@@ -7,7 +7,7 @@
 
 class MockFailureReporter : public FailureReporter {
 public:
-    MOCK_METHOD1(fail, void(const char*));
+    MOCK_METHOD1(fail, void(std::string));
 };
 
 #endif

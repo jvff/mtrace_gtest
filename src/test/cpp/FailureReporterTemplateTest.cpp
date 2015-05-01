@@ -15,7 +15,7 @@ static std::stringstream* failStream;
 DECLARE_FAILURE_REPORTER_CLASS(FakeFailureReporter);
 
 TEST(FailureReporterTemplateTest, failMethod) {
-    const char* errorMessage = "Test error message";
+    std::string errorMessage = "Test error message";
     FakeFailureReporter *reporter;
     std::stringstream stream;
 
@@ -25,7 +25,7 @@ TEST(FailureReporterTemplateTest, failMethod) {
 
     reporter->fail(errorMessage);
 
-    EXPECT_STREQ(errorMessage, stream.str().c_str());
+    EXPECT_EQ(errorMessage, stream.str());
 
     delete reporter;
 }

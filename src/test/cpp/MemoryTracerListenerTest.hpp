@@ -106,7 +106,7 @@ protected:
     }
 
     void testTraceResults(int memoryLeakCount, int memoryLeakSize,
-            int invalidDeallocationCount, const char* expectedError) {
+            int invalidDeallocationCount, std::string expectedError) {
         prepareParserExpectations(memoryLeakCount, memoryLeakSize,
                 invalidDeallocationCount);
 
