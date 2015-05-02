@@ -15,7 +15,7 @@ MemoryTracerListener::MemoryTracerListener() {
 
     if (mkdtemp(mtraceDirName) != NULL && mtraceDirName[0] != 0) {
         memcpy(mtraceFileName, mtraceDirName, strlen(mtraceDirName));
-        setenv(ENVIRONMENT_VARIABLE, mtraceFileName, 1);
+        setEnvironmentVariable();
     }
 
     failureReporter = new FailureReporter();
@@ -30,6 +30,7 @@ MemoryTracerListener::~MemoryTracerListener() {
 
     free(mtraceDirName);
     free(mtraceFileName);
+    free(mtraceEnvironmentVariable);
 
     delete traceFileParser;
     delete failureReporter;
@@ -101,4 +102,24 @@ void MemoryTracerListener::buildInvalidDeallocationErrorMessage(
 
     if (count > 0)
         errorMessage << count << (count == 1 ? countSingular :  countPlural);
+}
+
+void MemoryTracerListener::setEnvironmentVariable() {
+    int nameLength = strlen(ENVIRONMENT_VARIABLE);
+    int valueLength = strlen(mtraceFileName);
+    int totalLength = nameLength + 1 + valueLength;
+
+    mtraceEnvironmentVariable = (char*)malloc(totalLength + 1);
+
+    char* name = &mtraceEnvironmentVariable[0];
+    char* separator = name + nameLength;
+    char* value = separator + 1;
+    char* end = value + valueLength;
+
+    memcpy(name, ENVIRONMENT_VARIABLE, nameLength);
+    memcpy(value, mtraceFileName, valueLength);
+    *separator = '=';
+    *end = '\0';
+
+    putenv(mtraceEnvironmentVariable);
 }

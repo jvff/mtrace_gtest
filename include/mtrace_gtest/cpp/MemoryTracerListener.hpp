@@ -10,6 +10,7 @@
 
 class MemoryTracerListener : public testing::EmptyTestEventListener {
 protected:
+    char* mtraceEnvironmentVariable;
     char* mtraceDirName;
     char* mtraceFileName;
     FailureReporter* failureReporter;
@@ -27,6 +28,7 @@ protected:
     virtual void checkTraceResults();
 
 private:
+    void setEnvironmentVariable();
     void fail(int memoryLeakCount, int memoryLeakSize,
             int invalidDeallocationCount);
     void buildMemoryLeakErrorMessage(std::ostream& errorMessage, int count,
