@@ -8,6 +8,12 @@ TEST_F(MemoryTracerListenerTest, setEnvironmentTest) {
     EXPECT_FALSE(getEnvironmentVariable() == NULL);
 }
 
+TEST_F(MemoryTracerListenerTest, environmentVariableIsRemoved) {
+    destroy();
+
+    EXPECT_TRUE(getEnvironmentVariable() == NULL);
+}
+
 TEST_F(MemoryTracerListenerTest, traceFileIsInTempDir) {
     const char* tempDir = "/tmp/";
     const int length = strlen(tempDir);
@@ -49,11 +55,12 @@ TEST_F(MemoryTracerListenerTest, tempDirExists) {
 }
 
 TEST_F(MemoryTracerListenerTest, tempDirIsDeletedAfterDestruction) {
+    const char* dirPath = getDirPath();
     struct stat info;
 
     destroy();
 
-    EXPECT_NE(stat(getDirPath(), &info), 0);
+    EXPECT_NE(stat(dirPath, &info), 0);
     EXPECT_EQ(errno, ENOENT);
 }
 
