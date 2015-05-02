@@ -1,9 +1,10 @@
 #ifndef FAKE_MEMORY_TRACER_LISTENER_HPP
 #define FAKE_MEMORY_TRACER_LISTENER_HPP
 
-#include "Interceptor.hpp"
+#include <fakeit.hpp>
+
 #include "MemoryTracerListener.hpp"
-#include "MockFailureReporter.hpp"
+#include "MockInterceptor.hpp"
 #include "MockTraceFileParser.hpp"
 
 #define MOCK_INTERCEPT(x) Interceptor<x, Mock ## x>
@@ -14,15 +15,18 @@ private:
     int timesCheckTraceResultsWasCalled;
     int timesStopTraceWasCalled;
 
-    MOCK_INTERCEPT(FailureReporter) reporter;
+    MockInterceptor<FailureReporter> reporter;
     MOCK_INTERCEPT(TraceFileParser) parser;
 
 public:
     FakeMemoryTracerListener() : stopTraceWasCalledFirst(false),
             timesCheckTraceResultsWasCalled(0),
             timesStopTraceWasCalled(0),
-            reporter(failureReporter, new MockFailureReporter()),
+            reporter(failureReporter),
             parser(traceFileParser, new MockTraceFileParser(mtraceFileName)) {
+    }
+
+    ~FakeMemoryTracerListener() noexcept {
     }
 
     TraceFileParser* getParser() {
@@ -37,8 +41,8 @@ public:
         return reporter.getOriginal();
     }
 
-    MockFailureReporter* getMockFailureReporter() {
-        return reporter.getReplacement();
+    fakeit::Mock<FailureReporter>& getFailureReporterMock() {
+        return reporter.getMock();
     }
 
     void checkTraceResults() {

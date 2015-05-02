@@ -4,14 +4,17 @@
 #include <stdlib.h>
 #include <unistd.h>
 
+#include <fakeit.hpp>
 #include "gtest/gtest.h"
 
 #include "FakeMemoryTracerListener.hpp"
 #include "MockTraceFileParser.hpp"
 
-using testing::_;
+using fakeit::Mock;
+using fakeit::Verify;
+using fakeit::VerifyNoOtherInvocations;
+using fakeit::When;
 using testing::Return;
-using testing::StrEq;
 
 class MemoryTracerListenerTest : public testing::Test {
 private:
@@ -21,7 +24,6 @@ private:
 protected:
     FakeMemoryTracerListener* listener;
     MockTraceFileParser* parser;
-    MockFailureReporter* reporter;
 
     virtual void SetUp() {
         dirPath = NULL;
@@ -31,13 +33,13 @@ protected:
 
         listener = new FakeMemoryTracerListener();
         parser = listener->getMockParser();
-        reporter = listener->getMockFailureReporter();
 
         EXPECT_CALL(*parser, parse()).Times(0);
         EXPECT_CALL(*parser, getMemoryLeakCount()).Times(0);
         EXPECT_CALL(*parser, getMemoryLeakSize()).Times(0);
         EXPECT_CALL(*parser, getInvalidDeallocationCount()).Times(0);
-        EXPECT_CALL(*reporter, fail(_)).Times(0);
+
+        When(Method(listener->getFailureReporterMock(), fail)).Return();
     }
 
     virtual void TearDown() {
@@ -49,6 +51,10 @@ protected:
     }
 
     void destroy() {
+        Mock<FailureReporter>& reporter = listener->getFailureReporterMock();
+
+        VerifyNoOtherInvocations(Method(reporter, fail));
+
         delete listener;
         listener = NULL;
     }
@@ -107,12 +113,14 @@ protected:
 
     void testTraceResults(int memoryLeakCount, int memoryLeakSize,
             int invalidDeallocationCount, std::string expectedError) {
+        Mock<FailureReporter>& reporter = listener->getFailureReporterMock();
+
         prepareParserExpectations(memoryLeakCount, memoryLeakSize,
                 invalidDeallocationCount);
 
-        EXPECT_CALL(*reporter, fail(StrEq(expectedError)));
-
         listener->checkTraceResults();
+
+        Verify(Method(reporter, fail).Using(expectedError));
     }
 
     void performDummyAllocationAndDeallocation() {
