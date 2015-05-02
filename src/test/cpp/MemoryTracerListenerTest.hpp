@@ -8,22 +8,20 @@
 #include "gtest/gtest.h"
 
 #include "FakeMemoryTracerListener.hpp"
-#include "MockTraceFileParser.hpp"
 
 using fakeit::Mock;
 using fakeit::Verify;
 using fakeit::VerifyNoOtherInvocations;
 using fakeit::When;
-using testing::Return;
 
 class MemoryTracerListenerTest : public testing::Test {
 private:
+    bool parserShouldHaveBeenUsed = false;
     const char* environmentVariable;
     char* dirPath;
 
 protected:
     FakeMemoryTracerListener* listener;
-    MockTraceFileParser* parser;
 
     virtual void SetUp() {
         dirPath = NULL;
@@ -32,12 +30,6 @@ protected:
         unsetenv(environmentVariable);
 
         listener = new FakeMemoryTracerListener();
-        parser = listener->getMockParser();
-
-        EXPECT_CALL(*parser, parse()).Times(0);
-        EXPECT_CALL(*parser, getMemoryLeakCount()).Times(0);
-        EXPECT_CALL(*parser, getMemoryLeakSize()).Times(0);
-        EXPECT_CALL(*parser, getInvalidDeallocationCount()).Times(0);
 
         When(Method(listener->getFailureReporterMock(), fail)).Return();
     }
@@ -52,8 +44,21 @@ protected:
 
     void destroy() {
         Mock<FailureReporter>& reporter = listener->getFailureReporterMock();
+        Mock<TraceFileParser>& parser = listener->getTraceFileParserMock();
+
+        if (parserShouldHaveBeenUsed) {
+            Verify(Method(parser, parse)).Once();
+            Verify(Method(parser, getMemoryLeakCount)).Once();
+            Verify(Method(parser, getMemoryLeakSize)).Once();
+            Verify(Method(parser, getInvalidDeallocationCount)).Once();
+        }
 
         VerifyNoOtherInvocations(Method(reporter, fail));
+
+        VerifyNoOtherInvocations(Method(parser, parse));
+        VerifyNoOtherInvocations(Method(parser, getMemoryLeakCount));
+        VerifyNoOtherInvocations(Method(parser, getMemoryLeakSize));
+        VerifyNoOtherInvocations(Method(parser, getInvalidDeallocationCount));
 
         delete listener;
         listener = NULL;
@@ -102,13 +107,15 @@ protected:
 
     void prepareParserExpectations(int memoryLeakCount, int memoryLeakSize,
             int invalidDeallocationCount) {
-        EXPECT_CALL(*parser, parse()).Times(1);
-        EXPECT_CALL(*parser, getMemoryLeakCount()).Times(1)
-                .WillRepeatedly(Return(memoryLeakCount));
-        EXPECT_CALL(*parser, getMemoryLeakSize()).Times(1)
-                .WillRepeatedly(Return(memoryLeakSize));
-        EXPECT_CALL(*parser, getInvalidDeallocationCount()).Times(1)
-                .WillRepeatedly(Return(invalidDeallocationCount));
+        Mock<TraceFileParser>& parser = listener->getTraceFileParserMock();
+
+        When(Method(parser, parse)).Return();
+        When(Method(parser, getMemoryLeakCount)).Return(memoryLeakCount);
+        When(Method(parser, getMemoryLeakSize)).Return(memoryLeakSize);
+        When(Method(parser, getInvalidDeallocationCount))
+                .Return(invalidDeallocationCount);
+
+        parserShouldHaveBeenUsed = true;
     }
 
     void testTraceResults(int memoryLeakCount, int memoryLeakSize,
