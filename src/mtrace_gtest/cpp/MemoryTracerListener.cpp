@@ -23,6 +23,8 @@ MemoryTracerListener::MemoryTracerListener() {
 }
 
 MemoryTracerListener::~MemoryTracerListener() {
+    unsetenv(ENVIRONMENT_VARIABLE);
+
     unlink(mtraceFileName);
     rmdir(mtraceDirName);
 
