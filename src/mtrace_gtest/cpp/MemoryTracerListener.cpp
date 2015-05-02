@@ -26,6 +26,9 @@ MemoryTracerListener::~MemoryTracerListener() {
     unlink(mtraceFileName);
     rmdir(mtraceDirName);
 
+    free(mtraceDirName);
+    free(mtraceFileName);
+
     delete traceFileParser;
     delete failureReporter;
 }
