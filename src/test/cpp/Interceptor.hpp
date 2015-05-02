@@ -9,14 +9,22 @@ private:
     R* replacement;
     O*& intercepted;
 
+protected:
+    Interceptor(O*& intercepted) : intercepted(intercepted) {
+        original = intercepted;
+    }
+
+    void replaceWith(R* replacement, bool deleteInDestructor = true) {
+        this->deleteReplacementInDestructor = deleteInDestructor;
+        this->replacement = replacement;
+        intercepted = replacement;
+    }
+
 public:
     Interceptor(O*& intercepted, R* replacement,
             bool deleteReplacementInDestructor = true)
-            : intercepted(intercepted) {
-        this->deleteReplacementInDestructor = deleteReplacementInDestructor;
-        this->replacement = replacement;
-        original = intercepted;
-        intercepted = replacement;
+            : Interceptor(intercepted) {
+        replaceWith(replacement, deleteReplacementInDestructor);
     }
 
     ~Interceptor() {
