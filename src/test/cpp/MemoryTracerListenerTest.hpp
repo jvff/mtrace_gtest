@@ -105,7 +105,7 @@ protected:
         return dirName == NULL ? dirPath : dirName + 1;
     }
 
-    void prepareParserExpectations(int memoryLeakCount, int memoryLeakSize,
+    void prepareParserMock(int memoryLeakCount, int memoryLeakSize,
             int invalidDeallocationCount) {
         Mock<TraceFileParser>& parser = listener->getTraceFileParserMock();
 
@@ -122,7 +122,7 @@ protected:
             int invalidDeallocationCount, std::string expectedError) {
         Mock<FailureReporter>& reporter = listener->getFailureReporterMock();
 
-        prepareParserExpectations(memoryLeakCount, memoryLeakSize,
+        prepareParserMock(memoryLeakCount, memoryLeakSize,
                 invalidDeallocationCount);
 
         listener->checkTraceResults();

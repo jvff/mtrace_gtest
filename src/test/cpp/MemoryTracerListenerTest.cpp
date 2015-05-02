@@ -83,7 +83,7 @@ TEST_F(MemoryTracerListenerTest, parserIsCalledWhenTestEnds) {
     const testing::TestInfo* testInfo = unitTest->current_test_info();
 
     listener->OnTestStart(*testInfo);
-    prepareParserExpectations(0, 0, 0);
+    prepareParserMock(0, 0, 0);
     listener->OnTestEnd(*testInfo);
 
     EXPECT_EQ(1, listener->getTimesCheckTraceResultsWasCalled());
@@ -117,7 +117,7 @@ TEST_F(MemoryTracerListenerTest, traceStopsWhenTestEnds) {
     const testing::TestInfo* testInfo = unitTest->current_test_info();
 
     listener->OnTestStart(*testInfo);
-    prepareParserExpectations(0, 0, 0);
+    prepareParserMock(0, 0, 0);
     listener->OnTestEnd(*testInfo);
 
     EXPECT_EQ(1, listener->getTimesStopTraceWasCalled());
