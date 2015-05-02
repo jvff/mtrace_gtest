@@ -8,11 +8,6 @@ model {
                     staticLibraryFile = file("/usr/lib/x86_64-linux-gnu/libgtest.a")
                 }
             }
-            gtest_main {
-                binaries.withType(StaticLibraryBinary) {
-                    staticLibraryFile = file("/usr/lib/x86_64-linux-gnu/libgtest_main.a")
-                }
-            }
             fakeit {
                 headers.srcDir "/home/janito/lib/fakeit/include"
                 headers.srcDir "/home/janito/lib/fakeit/config/gtest"
@@ -38,10 +33,10 @@ model {
                 linker.args "-pthread"
             }
             sources.cpp {
+                lib library: 'mtrace_gtest_main', linkage: 'static'
                 lib library: 'mtrace_gtest', linkage: 'static'
                 lib library: 'gtest', linkage: 'static'
                 lib library: 'fakeit', linkage: 'api'
-                lib library: 'gtest_main', linkage: 'static'
             }
         }
         sample(NativeExecutableSpec) {
