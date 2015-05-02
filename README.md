@@ -25,8 +25,9 @@ To compile the libraries, you will need Java to run the Gradle build
 system. Gradle itself isn't needed, because the wrapper script should
 download the appropriate version of it automatically.
 
-You will also need to have the Google Test library installed. You can
-set the path to the `libgtest.a` library in the `build.gradle` file.
+You will also need to have the Google Test library and the FakeIt
+mocking library installed. You can set the path to the `libgtest.a`
+library and the FakeIt headers in the `build.gradle` file.
 
 
 ## Compiling
