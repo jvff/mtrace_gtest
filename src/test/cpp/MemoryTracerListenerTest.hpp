@@ -20,6 +20,25 @@ private:
     const char* environmentVariable;
     char* dirPath;
 
+    void verifyMocks() {
+        Mock<FailureReporter>& reporter = listener->getFailureReporterMock();
+        Mock<TraceFileParser>& parser = listener->getTraceFileParserMock();
+
+        if (parserShouldHaveBeenUsed) {
+            Verify(Method(parser, parse)).Once();
+            Verify(Method(parser, getMemoryLeakCount)).Once();
+            Verify(Method(parser, getMemoryLeakSize)).Once();
+            Verify(Method(parser, getInvalidDeallocationCount)).Once();
+        }
+
+        VerifyNoOtherInvocations(Method(parser, parse));
+        VerifyNoOtherInvocations(Method(parser, getMemoryLeakCount));
+        VerifyNoOtherInvocations(Method(parser, getMemoryLeakSize));
+        VerifyNoOtherInvocations(Method(parser, getInvalidDeallocationCount));
+
+        VerifyNoOtherInvocations(Method(reporter, fail));
+    }
+
 protected:
     FakeMemoryTracerListener* listener;
 
@@ -43,22 +62,7 @@ protected:
     }
 
     void destroy() {
-        Mock<FailureReporter>& reporter = listener->getFailureReporterMock();
-        Mock<TraceFileParser>& parser = listener->getTraceFileParserMock();
-
-        if (parserShouldHaveBeenUsed) {
-            Verify(Method(parser, parse)).Once();
-            Verify(Method(parser, getMemoryLeakCount)).Once();
-            Verify(Method(parser, getMemoryLeakSize)).Once();
-            Verify(Method(parser, getInvalidDeallocationCount)).Once();
-        }
-
-        VerifyNoOtherInvocations(Method(reporter, fail));
-
-        VerifyNoOtherInvocations(Method(parser, parse));
-        VerifyNoOtherInvocations(Method(parser, getMemoryLeakCount));
-        VerifyNoOtherInvocations(Method(parser, getMemoryLeakSize));
-        VerifyNoOtherInvocations(Method(parser, getInvalidDeallocationCount));
+        verifyMocks();
 
         delete listener;
         listener = NULL;
