@@ -8,14 +8,6 @@
 
 #include "MemoryTracer.hpp"
 
-TEST(MemoryTracerTest, classExists) {
-    MemoryTracer* tracer = new MemoryTracer();
-
-    EXPECT_TRUE(tracer != NULL);
-
-    delete tracer;
-}
-
 TEST(MemoryTracerTest, startTrace) {
     const std::string envVarName = "MALLOC_TRACE";
     const std::string mtraceFile = "/tmp/MemoryTracerTest_startTrace.mtrace";
