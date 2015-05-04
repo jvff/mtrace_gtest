@@ -8,6 +8,11 @@ model {
                     staticLibraryFile = file("/usr/lib/x86_64-linux-gnu/libgtest.a")
                 }
             }
+            gtest_main {
+                binaries.withType(StaticLibraryBinary) {
+                    staticLibraryFile = file("/usr/lib/x86_64-linux-gnu/libgtest_main.a")
+                }
+            }
             fakeit {
                 headers.srcDir "/home/janito/lib/fakeit/include"
                 headers.srcDir "/home/janito/lib/fakeit/config/gtest"
@@ -25,6 +30,18 @@ model {
         mtrace_gtest_main(NativeLibrarySpec) {
             sources.cpp {
                 lib library: 'mtrace_gtest'
+            }
+        }
+        testMemoryTracer(NativeExecutableSpec) {
+            binaries.all {
+                cppCompiler.args "-std=c++11"
+                linker.args "-pthread"
+            }
+            sources.cpp {
+                lib library: 'gtest_main', linkage: 'static'
+                lib library: 'mtrace_gtest', linkage: 'static'
+                lib library: 'gtest', linkage: 'static'
+                lib library: 'fakeit', linkage: 'api'
             }
         }
         test(NativeExecutableSpec) {
@@ -54,7 +71,18 @@ model {
 
 task checkHeaderGuards(type: com.janitovff.headerguardplugin.HeaderGuardTask)
 
-task test(type: Exec, dependsOn: ['testExecutable', 'checkHeaderGuards']) {
+task testMemoryTracer(type: Exec, dependsOn: ['testMemoryTracerExecutable',
+        'checkHeaderGuards']) {
+    doFirst {
+        def binary = binaries.getByName 'testMemoryTracerExecutable'
+        def executableFile = binary.getExecutableFile()
+
+        commandLine executableFile.toString(), '--gtest_color=yes'
+    }
+}
+
+task test(type: Exec, dependsOn: ['testExecutable', 'checkHeaderGuards',
+        'testMemoryTracer']) {
     doFirst {
         def binary = binaries.getByName 'testExecutable'
         def executableFile = binary.getExecutableFile()
