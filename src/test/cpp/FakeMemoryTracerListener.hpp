@@ -43,7 +43,7 @@ public:
     }
 
     MemoryTracer* getMemoryTracer() {
-	return memoryTracer;
+        return memoryTracer;
     }
 
     void checkTraceResults() {

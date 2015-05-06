@@ -58,7 +58,7 @@ protected:
 private:
     void setUpMtraceFileName() {
         const testing::UnitTest* unitTest = testing::UnitTest::GetInstance();
-	const testing::TestInfo* testInfo = unitTest->current_test_info();
+        const testing::TestInfo* testInfo = unitTest->current_test_info();
         const std::string testCaseName = testInfo->name();
         const std::string testName = testInfo->name();
         const std::string fileSuffix = ".mtrace";
