@@ -11,6 +11,7 @@ public:
     TempDir();
     TempDir(const char* prefix);
     TempDir(std::string prefix);
+    ~TempDir();
 
     std::string getPath();
 };

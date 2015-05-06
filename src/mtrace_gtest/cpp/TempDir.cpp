@@ -1,4 +1,5 @@
 #include <string.h>
+#include <unistd.h>
 
 #include "TempDir.hpp"
 
@@ -19,6 +20,10 @@ TempDir::TempDir(std::string prefix) {
 
     path = newPath;
     free(newPath);
+}
+
+TempDir::~TempDir() {
+    rmdir(path.c_str());
 }
 
 std::string TempDir::getPath() {
