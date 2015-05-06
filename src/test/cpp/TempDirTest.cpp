@@ -35,3 +35,9 @@ TEST(TempDirTest, tempDirWithPrefixExists) {
     EXPECT_EQ(stat(dir.getPath().c_str(), &info), 0);
     EXPECT_TRUE(S_ISDIR(info.st_mode));
 }
+
+TEST(TempDirTest, twoTempDirsDontHaveTheSamePath) {
+    TempDir firstDir, secondDir;
+
+    EXPECT_NE(firstDir.getPath(), secondDir.getPath());
+}
