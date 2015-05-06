@@ -4,7 +4,14 @@
 #include <string>
 
 class TempDir {
+private:
+    std::string path;
+
 public:
+    TempDir();
+    TempDir(const char* prefix);
+    TempDir(std::string prefix);
+
     std::string getPath();
 };
 
