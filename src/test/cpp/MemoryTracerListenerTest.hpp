@@ -22,6 +22,7 @@ private:
 
     void verifyMocks() {
         Mock<FailureReporter>& reporter = listener->getFailureReporterMock();
+        Mock<MemoryTracer>& tracer = listener->getMemoryTracerMock();
         Mock<TraceFileParser>& parser = listener->getTraceFileParserMock();
 
         if (parserShouldHaveBeenUsed) {
@@ -36,6 +37,9 @@ private:
         VerifyNoOtherInvocations(Method(parser, getMemoryLeakSize));
         VerifyNoOtherInvocations(Method(parser, getInvalidDeallocationCount));
 
+        VerifyNoOtherInvocations(Method(tracer, start));
+        VerifyNoOtherInvocations(Method(tracer, stop));
+
         VerifyNoOtherInvocations(Method(reporter, fail));
     }
 
@@ -49,6 +53,9 @@ protected:
         unsetenv(environmentVariable);
 
         listener = new FakeMemoryTracerListener();
+
+        When(Method(listener->getMemoryTracerMock(), start)).Return();
+        When(Method(listener->getMemoryTracerMock(), stop)).Return();
 
         When(Method(listener->getFailureReporterMock(), fail)).Return();
     }

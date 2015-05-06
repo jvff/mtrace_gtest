@@ -13,6 +13,7 @@ private:
     int timesStopTraceWasCalled;
 
     MockInterceptor<FailureReporter> reporter;
+    MockInterceptor<MemoryTracer> tracer;
     MockInterceptor<TraceFileParser> parser;
 
 public:
@@ -20,6 +21,7 @@ public:
             timesCheckTraceResultsWasCalled(0),
             timesStopTraceWasCalled(0),
             reporter(failureReporter),
+            tracer(memoryTracer),
             parser(traceFileParser) {
     }
 
@@ -43,7 +45,11 @@ public:
     }
 
     MemoryTracer* getMemoryTracer() {
-        return memoryTracer;
+        return tracer.getOriginal();
+    }
+
+    fakeit::Mock<MemoryTracer>& getMemoryTracerMock() {
+        return tracer.getMock();
     }
 
     void checkTraceResults() {
