@@ -48,3 +48,14 @@ TEST(TempDirTest, twoTempDirsWithTheSamePrefixDontHaveTheSamePath) {
 
     EXPECT_NE(firstDir.getPath(), secondDir.getPath());
 }
+
+TEST(TempDirTest, dirIsDeletedAfterDestruction) {
+    auto dir = new TempDir();
+    std::string path = dir->getPath();
+    struct stat info;
+
+    delete dir;
+
+    EXPECT_NE(stat(path.c_str(), &info), 0);
+    EXPECT_EQ(errno, ENOENT);
+}
