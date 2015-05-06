@@ -20,3 +20,16 @@ TEST(EnvironmentVariableTest, set) {
 
     EXPECT_STREQ(value, getenv(name));
 }
+
+TEST(EnvironmentVariableTest, unsetInDestructor) {
+    const char* name = "TEST_VAR";
+    const char* value = "test value";
+    auto var = new EnvironmentVariable(name);
+
+    unsetenv(name);
+    *var = value;
+
+    delete var;
+
+    EXPECT_TRUE(getenv(name) == NULL);
+}
