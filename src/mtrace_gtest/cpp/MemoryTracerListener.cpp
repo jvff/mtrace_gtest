@@ -19,6 +19,7 @@ MemoryTracerListener::MemoryTracerListener() {
     }
 
     failureReporter = new FailureReporter();
+    memoryTracer = new MemoryTracer();
     traceFileParser = new TraceFileParser(mtraceFileName);
 }
 
@@ -33,6 +34,7 @@ MemoryTracerListener::~MemoryTracerListener() {
     free(mtraceEnvironmentVariable);
 
     delete traceFileParser;
+    delete memoryTracer;
     delete failureReporter;
 }
 

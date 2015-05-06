@@ -6,6 +6,7 @@
 #include "gtest/gtest.h"
 
 #include "FailureReporter.hpp"
+#include "MemoryTracer.hpp"
 #include "TraceFileParser.hpp"
 
 class MemoryTracerListener : public testing::EmptyTestEventListener {
@@ -14,6 +15,7 @@ protected:
     char* mtraceDirName;
     char* mtraceFileName;
     FailureReporter* failureReporter;
+    MemoryTracer* memoryTracer;
     TraceFileParser* traceFileParser;
 
 public:
