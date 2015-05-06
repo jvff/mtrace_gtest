@@ -41,3 +41,10 @@ TEST(TempDirTest, twoTempDirsDontHaveTheSamePath) {
 
     EXPECT_NE(firstDir.getPath(), secondDir.getPath());
 }
+
+TEST(TempDirTest, twoTempDirsWithTheSamePrefixDontHaveTheSamePath) {
+    TempDir firstDir{"tempdir_prefix_"};
+    TempDir secondDir{"tempdir_prefix_"};
+
+    EXPECT_NE(firstDir.getPath(), secondDir.getPath());
+}
