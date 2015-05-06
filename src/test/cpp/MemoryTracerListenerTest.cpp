@@ -68,6 +68,12 @@ TEST_F(MemoryTracerListenerTest, implementsTestListener) {
     testing::TestEventListener* superClass = listener;
 }
 
+TEST_F(MemoryTracerListenerTest, listenerInitializesTracer) {
+    MemoryTracer* memoryTracer = listener->getMemoryTracer();
+
+    EXPECT_TRUE(memoryTracer != NULL);
+}
+
 TEST_F(MemoryTracerListenerTest, traceFileIsCreatedWhenTestStarts) {
     const testing::UnitTest* unitTest = testing::UnitTest::GetInstance();
     const testing::TestInfo* testInfo = unitTest->current_test_info();

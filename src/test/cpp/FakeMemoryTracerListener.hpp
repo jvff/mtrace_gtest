@@ -42,6 +42,10 @@ public:
         return reporter.getMock();
     }
 
+    MemoryTracer* getMemoryTracer() {
+	return memoryTracer;
+    }
+
     void checkTraceResults() {
         ++timesCheckTraceResultsWasCalled;
         MemoryTracerListener::checkTraceResults();
