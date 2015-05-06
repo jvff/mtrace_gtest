@@ -1,35 +1,19 @@
-#include <gtest/gtest.h>
+#include "EnvironmentVariableTest.hpp"
 
-#include "EnvironmentVariable.hpp"
-
-TEST(EnvironmentVariableTest, getName) {
-    const char* name = "TEST_VAR";
-    EnvironmentVariable var{name};
-
-    EXPECT_STREQ(name, var.getName().c_str());
+TEST_F(EnvironmentVariableTest, getName) {
+    EXPECT_STREQ(name, variable->getName().c_str());
 }
 
-TEST(EnvironmentVariableTest, set) {
-    const char* name = "TEST_VAR";
-    const char* value = "test value";
-    EnvironmentVariable var{name};
-
-    unsetenv(name);
-
-    var = value;
+TEST_F(EnvironmentVariableTest, set) {
+    *variable = value;
 
     EXPECT_STREQ(value, getenv(name));
 }
 
-TEST(EnvironmentVariableTest, unsetInDestructor) {
-    const char* name = "TEST_VAR";
-    const char* value = "test value";
-    auto var = new EnvironmentVariable(name);
+TEST_F(EnvironmentVariableTest, unsetInDestructor) {
+    *variable = value;
 
-    unsetenv(name);
-    *var = value;
-
-    delete var;
+    destroy();
 
     EXPECT_TRUE(getenv(name) == NULL);
 }
