@@ -19,3 +19,11 @@ TEST(TempDirTest, customDirPrefix) {
 
     EXPECT_TRUE(strncmp(dirPrefix, dirName.c_str(), length) == 0);
 }
+
+TEST(TempDirTest, tempDirExists) {
+    TempDir dir;
+    struct stat info;
+
+    EXPECT_EQ(stat(dir.getPath().c_str(), &info), 0);
+    EXPECT_TRUE(S_ISDIR(info.st_mode));
+}
