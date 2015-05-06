@@ -27,3 +27,11 @@ TEST(TempDirTest, tempDirExists) {
     EXPECT_EQ(stat(dir.getPath().c_str(), &info), 0);
     EXPECT_TRUE(S_ISDIR(info.st_mode));
 }
+
+TEST(TempDirTest, tempDirWithPrefixExists) {
+    TempDir dir{"tempdir_prefix_"};
+    struct stat info;
+
+    EXPECT_EQ(stat(dir.getPath().c_str(), &info), 0);
+    EXPECT_TRUE(S_ISDIR(info.st_mode));
+}
