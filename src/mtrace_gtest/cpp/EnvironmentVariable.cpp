@@ -7,8 +7,10 @@ EnvironmentVariable::EnvironmentVariable(const char* name) : name(name) {
 }
 
 EnvironmentVariable::~EnvironmentVariable() {
-    if (environmentString != NULL)
+    if (environmentString != NULL) {
+        unsetenv(name.c_str());
         delete environmentString;
+    }
 }
 
 const std::string& EnvironmentVariable::getName() {
