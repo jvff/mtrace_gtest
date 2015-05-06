@@ -3,8 +3,8 @@
 
 class MemoryTracer {
 public:
-    void start();
-    void stop();
+    virtual void start();
+    virtual void stop();
 };
 
 #endif
