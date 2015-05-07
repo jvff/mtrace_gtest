@@ -10,6 +10,17 @@ TEST_F(MemoryTracerListenerTest, listenerUsesMallocTraceEnvVar) {
     EXPECT_EQ(environmentVariable, envVar->getName());
 }
 
+TEST_F(MemoryTracerListenerTest, envVarIsSetToMtraceFileInTempDir) {
+    Mock<EnvironmentVariable>& mock = listener->getMallocTraceEnvVarMock();
+
+    When(OverloadedMethod(mock, operator=, void(const std::string&))).Return();
+
+    listener->setEnvironmentVariable();
+
+    Verify(OverloadedMethod(mock, operator=, void(const std::string&))
+            .Using(getFilePath()));
+}
+
 TEST_F(MemoryTracerListenerTest, listenerInitializesTempDir) {
     std::string expectedPathPrefix = "/tmp/mtrace_gtest.";
     int expectedLength = expectedPathPrefix.length();

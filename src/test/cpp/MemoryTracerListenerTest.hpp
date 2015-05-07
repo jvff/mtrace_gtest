@@ -16,8 +16,9 @@ using fakeit::When;
 
 class MemoryTracerListenerTest : public testing::Test {
 private:
-    bool parserShouldHaveBeenUsed = false;
     char* dirPath;
+    std::string filePath;
+    bool parserShouldHaveBeenUsed = false;
 
     void verifyMocks() {
         Mock<FailureReporter>& reporter = listener->getFailureReporterMock();
@@ -47,12 +48,11 @@ protected:
     FakeMemoryTracerListener* listener;
 
     virtual void SetUp() {
-        dirPath = NULL;
-
         environmentVariable = "MALLOC_TRACE";
-        unsetenv(environmentVariable);
 
         listener = new FakeMemoryTracerListener();
+        filePath = listener->getTempDir().getPath() + "/mtrace";
+        dirPath = NULL;
 
         When(Method(listener->getMemoryTracerMock(), start)).Return();
         When(Method(listener->getMemoryTracerMock(), stop)).Return();
@@ -75,12 +75,8 @@ protected:
         listener = NULL;
     }
 
-    const char* getEnvironmentVariable() {
-        return getenv(environmentVariable);
-    }
-
     const char* getFilePath() {
-        return getEnvironmentVariable();
+        return filePath.c_str();
     }
 
     const char* getFileName() {

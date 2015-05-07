@@ -12,14 +12,17 @@ private:
     int timesCheckTraceResultsWasCalled;
     int timesStopTraceWasCalled;
 
+    MockInterceptor<EnvironmentVariable> envVar;
     MockInterceptor<FailureReporter> reporter;
     MockInterceptor<MemoryTracer> tracer;
     MockInterceptor<TraceFileParser> parser;
 
 public:
-    FakeMemoryTracerListener() : stopTraceWasCalledFirst(false),
+    FakeMemoryTracerListener() : MemoryTracerListener(false),
+            stopTraceWasCalledFirst(false),
             timesCheckTraceResultsWasCalled(0),
             timesStopTraceWasCalled(0),
+            envVar(mallocTraceEnvVar),
             reporter(failureReporter),
             tracer(memoryTracer),
             parser(traceFileParser) {
@@ -33,7 +36,11 @@ public:
     }
 
     EnvironmentVariable* getMallocTraceEnvVar() {
-        return mallocTraceEnvVar;
+        return envVar.getOriginal();
+    }
+
+    fakeit::Mock<EnvironmentVariable>& getMallocTraceEnvVarMock() {
+        return envVar.getMock();
     }
 
     TraceFileParser* getParser() {
@@ -84,6 +91,8 @@ public:
     bool wasStopTraceCalledBeforeCheckTraceResults() {
         return stopTraceWasCalledFirst;
     }
+
+    using MemoryTracerListener::setEnvironmentVariable;
 };
 
 #endif
