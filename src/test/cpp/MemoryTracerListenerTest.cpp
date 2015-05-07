@@ -153,12 +153,10 @@ TEST_F(MemoryTracerListenerTest, traceStopsWhenTestEnds) {
     const testing::UnitTest* unitTest = testing::UnitTest::GetInstance();
     const testing::TestInfo* testInfo = unitTest->current_test_info();
 
-    listener->OnTestStart(*testInfo);
     prepareParserMock(0, 0, 0);
     listener->OnTestEnd(*testInfo);
 
-    EXPECT_EQ(1, listener->getTimesStopTraceWasCalled());
-    EXPECT_TRUE(listener->wasStopTraceCalledBeforeCheckTraceResults());
+    Verify(Method(listener->getMemoryTracerMock(), stop)).Once();
 }
 
 TEST_F(MemoryTracerListenerTest, reporterIsInitialized) {
