@@ -1,4 +1,3 @@
-#include <mcheck.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -47,7 +46,7 @@ void MemoryTracerListener::setEnvironmentVariable() {
 }
 
 void MemoryTracerListener::stopTrace() {
-    muntrace();
+    memoryTracer->stop();
 }
 
 void MemoryTracerListener::checkTraceResults() {
