@@ -29,13 +29,6 @@ TEST_F(MemoryTracerListenerTest, listenerInitializesTempDir) {
     EXPECT_EQ(expectedPathPrefix, tempDir.getPath().substr(0, expectedLength));
 }
 
-TEST_F(MemoryTracerListenerTest, traceFileIsInTempDir) {
-    const char* tempDir = "/tmp/";
-    const int length = strlen(tempDir);
-
-    EXPECT_TRUE(strncmp(tempDir, getFilePath(), length) == 0);
-}
-
 TEST_F(MemoryTracerListenerTest, traceFileDoesntExistYet) {
     struct stat info;
 
@@ -45,38 +38,6 @@ TEST_F(MemoryTracerListenerTest, traceFileDoesntExistYet) {
 
 TEST_F(MemoryTracerListenerTest, traceFileNameIsFixed) {
     EXPECT_STREQ("mtrace", getFileName());
-}
-
-TEST_F(MemoryTracerListenerTest, traceFileIsInNewTempDir) {
-    const char* dirName = getDirName();
-    char* dirPrefix = strdup(dirName);
-    const int dirNameLength = strlen(dirName);
-    const int wildcardLength = 6;
-
-    ASSERT_GT(dirNameLength, wildcardLength);
-
-    dirPrefix[strlen(dirName) - wildcardLength] = '\0';
-
-    EXPECT_STREQ("mtrace_gtest.", dirPrefix);
-
-    free(dirPrefix);
-}
-
-TEST_F(MemoryTracerListenerTest, tempDirExists) {
-    struct stat info;
-
-    EXPECT_EQ(stat(getDirPath(), &info), 0);
-    EXPECT_TRUE(S_ISDIR(info.st_mode));
-}
-
-TEST_F(MemoryTracerListenerTest, tempDirIsDeletedAfterDestruction) {
-    const char* dirPath = getDirPath();
-    struct stat info;
-
-    destroy();
-
-    EXPECT_NE(stat(dirPath, &info), 0);
-    EXPECT_EQ(errno, ENOENT);
 }
 
 TEST_F(MemoryTracerListenerTest, implementsTestListener) {
