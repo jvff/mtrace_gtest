@@ -8,14 +8,20 @@
 
 #define ENVIRONMENT_VARIABLE "MALLOC_TRACE"
 
-MemoryTracerListener::MemoryTracerListener() : tempDir("mtrace_gtest.") {
+MemoryTracerListener::MemoryTracerListener() : MemoryTracerListener(true) {
+}
+
+MemoryTracerListener::MemoryTracerListener(bool shouldSetEnvironmentVariable)
+	: tempDir("mtrace_gtest.") {
     mtraceFileName = tempDir.getPath() + "/mtrace";
 
-    setEnvironmentVariable();
-
+    mallocTraceEnvVar = new MallocTraceEnvVar();
     failureReporter = new FailureReporter();
     memoryTracer = new MemoryTracer();
     traceFileParser = new TraceFileParser(mtraceFileName);
+
+    if (shouldSetEnvironmentVariable)
+	setEnvironmentVariable();
 }
 
 MemoryTracerListener::~MemoryTracerListener() {
@@ -34,6 +40,10 @@ void MemoryTracerListener::OnTestStart(const testing::TestInfo& testInfo) {
 void MemoryTracerListener::OnTestEnd(const testing::TestInfo& testInfo) {
     stopTrace();
     checkTraceResults();
+}
+
+void MemoryTracerListener::setEnvironmentVariable() {
+    *mallocTraceEnvVar = mtraceFileName;
 }
 
 void MemoryTracerListener::stopTrace() {
@@ -93,9 +103,4 @@ void MemoryTracerListener::buildInvalidDeallocationErrorMessage(
 
     if (count > 0)
         errorMessage << count << (count == 1 ? countSingular :  countPlural);
-}
-
-void MemoryTracerListener::setEnvironmentVariable() {
-    mallocTraceEnvVar = new MallocTraceEnvVar();
-    *mallocTraceEnvVar = mtraceFileName;
 }

@@ -28,11 +28,13 @@ public:
     virtual void OnTestEnd(const testing::TestInfo& testInfo);
 
 protected:
+    MemoryTracerListener(bool shouldSetEnvironmentVariable);
+
+    void setEnvironmentVariable();
     virtual void stopTrace();
     virtual void checkTraceResults();
 
 private:
-    void setEnvironmentVariable();
     void fail(int memoryLeakCount, int memoryLeakSize,
             int invalidDeallocationCount);
     void buildMemoryLeakErrorMessage(std::ostream& errorMessage, int count,
