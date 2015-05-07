@@ -4,6 +4,8 @@
 
 #include "MemoryTracerListenerTest.hpp"
 
+using fakeit::Spy;
+
 TEST_F(MemoryTracerListenerTest, listenerUsesMallocTraceEnvVar) {
     EnvironmentVariable* envVar = listener->getMallocTraceEnvVar();
 
@@ -65,16 +67,6 @@ TEST_F(MemoryTracerListenerTest, listenerInitializesParser) {
     EXPECT_TRUE(parser != NULL);
 }
 
-TEST_F(MemoryTracerListenerTest, parserIsCalledWhenTestEnds) {
-    const testing::UnitTest* unitTest = testing::UnitTest::GetInstance();
-    const testing::TestInfo* testInfo = unitTest->current_test_info();
-
-    prepareParserMock(0, 0, 0);
-    listener->OnTestEnd(*testInfo);
-
-    EXPECT_EQ(1, listener->getTimesCheckTraceResultsWasCalled());
-}
-
 TEST_F(MemoryTracerListenerTest, traceStopsWhenTestEnds) {
     const testing::UnitTest* unitTest = testing::UnitTest::GetInstance();
     const testing::TestInfo* testInfo = unitTest->current_test_info();
@@ -83,6 +75,21 @@ TEST_F(MemoryTracerListenerTest, traceStopsWhenTestEnds) {
     listener->OnTestEnd(*testInfo);
 
     Verify(Method(listener->getMemoryTracerMock(), stop)).Once();
+}
+
+TEST_F(MemoryTracerListenerTest, parserIsCalledAfterTraceStopsWhenTestEnds) {
+    const testing::UnitTest* unitTest = testing::UnitTest::GetInstance();
+    const testing::TestInfo* testInfo = unitTest->current_test_info();
+    auto listenerSpy = Mock<FakeMemoryTracerListener>(*listener);
+
+    Spy(Method(listenerSpy, OnTestEnd));
+    Spy(Method(listenerSpy, checkTraceResults));
+
+    prepareParserMock(0, 0, 0);
+    listenerSpy.get().OnTestEnd(*testInfo);
+
+    Verify(Method(listener->getMemoryTracerMock(), stop)
+            + Method(listenerSpy, checkTraceResults));
 }
 
 TEST_F(MemoryTracerListenerTest, reporterIsInitialized) {
