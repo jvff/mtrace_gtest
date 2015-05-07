@@ -59,17 +59,6 @@ TEST_F(MemoryTracerListenerTest, tracingStartsWhenTestStarts) {
     Verify(Method(listener->getMemoryTracerMock(), start)).Once();
 }
 
-TEST_F(MemoryTracerListenerTest, traceFileIsCreatedWhenTestStarts) {
-    const testing::UnitTest* unitTest = testing::UnitTest::GetInstance();
-    const testing::TestInfo* testInfo = unitTest->current_test_info();
-    struct stat info;
-
-    listener->OnTestStart(*testInfo);
-
-    EXPECT_EQ(stat(getFilePath(), &info), 0);
-    EXPECT_TRUE(S_ISREG(info.st_mode));
-}
-
 TEST_F(MemoryTracerListenerTest, listenerInitializesParser) {
     TraceFileParser* parser = listener->getParser();
 
@@ -85,29 +74,6 @@ TEST_F(MemoryTracerListenerTest, parserIsCalledWhenTestEnds) {
     listener->OnTestEnd(*testInfo);
 
     EXPECT_EQ(1, listener->getTimesCheckTraceResultsWasCalled());
-}
-
-TEST_F(MemoryTracerListenerTest, traceStopsWhenRequested) {
-    const char* filePath = getFilePath();
-    const testing::UnitTest* unitTest = testing::UnitTest::GetInstance();
-    const testing::TestInfo* testInfo = unitTest->current_test_info();
-    time_t modificationTimeBeforeDummyOperations;
-    time_t modificationTimeAfterDummyOperations;
-    struct stat info;
-
-    listener->OnTestStart(*testInfo);
-    listener->stopTrace();
-
-    EXPECT_EQ(stat(filePath, &info), 0);
-    modificationTimeBeforeDummyOperations = info.st_mtime;
-
-    performDummyAllocationAndDeallocation();
-
-    EXPECT_EQ(stat(filePath, &info), 0);
-    modificationTimeAfterDummyOperations = info.st_mtime;
-
-    EXPECT_EQ(modificationTimeBeforeDummyOperations,
-            modificationTimeAfterDummyOperations);
 }
 
 TEST_F(MemoryTracerListenerTest, traceStopsWhenTestEnds) {

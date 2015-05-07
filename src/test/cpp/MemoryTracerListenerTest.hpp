@@ -136,14 +136,6 @@ protected:
 
         Verify(Method(reporter, fail).Using(expectedError));
     }
-
-    void performDummyAllocationAndDeallocation() {
-        void* dummyAddress = malloc(123);
-
-        EXPECT_TRUE(dummyAddress != NULL);
-
-        free(dummyAddress);
-    }
 };
 
 #endif
