@@ -34,7 +34,7 @@ MemoryTracerListener::~MemoryTracerListener() {
 }
 
 void MemoryTracerListener::OnTestStart(const testing::TestInfo& testInfo) {
-    mtrace();
+    memoryTracer->start();
 }
 
 void MemoryTracerListener::OnTestEnd(const testing::TestInfo& testInfo) {
