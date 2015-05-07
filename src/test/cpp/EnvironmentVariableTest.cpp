@@ -10,6 +10,12 @@ TEST_F(EnvironmentVariableTest, set) {
     EXPECT_STREQ(value, getenv(name));
 }
 
+TEST_F(EnvironmentVariableTest, setWithStringReference) {
+    *variable = std::string(value);
+
+    EXPECT_STREQ(value, getenv(name));
+}
+
 TEST_F(EnvironmentVariableTest, unsetInDestructor) {
     *variable = value;
 
