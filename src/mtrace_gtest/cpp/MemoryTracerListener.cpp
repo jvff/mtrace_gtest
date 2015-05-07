@@ -9,7 +9,7 @@
 #define ENVIRONMENT_VARIABLE "MALLOC_TRACE"
 #define DIRNAME_TEMPLATE "/tmp/mtrace_gtest.XXXXXX"
 
-MemoryTracerListener::MemoryTracerListener() {
+MemoryTracerListener::MemoryTracerListener() : tempDir("mtrace_gtest.") {
     mtraceDirName = strdup(DIRNAME_TEMPLATE);
     mtraceFileName = strdup(DIRNAME_TEMPLATE "/mtrace");
 

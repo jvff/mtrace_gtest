@@ -7,6 +7,7 @@
 
 #include "FailureReporter.hpp"
 #include "MemoryTracer.hpp"
+#include "TempDir.hpp"
 #include "TraceFileParser.hpp"
 
 class MemoryTracerListener : public testing::EmptyTestEventListener {
@@ -17,6 +18,7 @@ protected:
     FailureReporter* failureReporter;
     MemoryTracer* memoryTracer;
     TraceFileParser* traceFileParser;
+    TempDir tempDir;
 
 public:
     MemoryTracerListener();
