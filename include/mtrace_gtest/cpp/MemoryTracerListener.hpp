@@ -13,8 +13,7 @@
 class MemoryTracerListener : public testing::EmptyTestEventListener {
 protected:
     char* mtraceEnvironmentVariable;
-    char* mtraceDirName;
-    char* mtraceFileName;
+    std::string mtraceFileName;
     FailureReporter* failureReporter;
     MemoryTracer* memoryTracer;
     TraceFileParser* traceFileParser;

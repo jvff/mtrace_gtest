@@ -7,30 +7,22 @@
 #include "MemoryTracerListener.hpp"
 
 #define ENVIRONMENT_VARIABLE "MALLOC_TRACE"
-#define DIRNAME_TEMPLATE "/tmp/mtrace_gtest.XXXXXX"
 
 MemoryTracerListener::MemoryTracerListener() : tempDir("mtrace_gtest.") {
-    mtraceDirName = strdup(DIRNAME_TEMPLATE);
-    mtraceFileName = strdup(DIRNAME_TEMPLATE "/mtrace");
+    mtraceFileName = tempDir.getPath() + "/mtrace";
 
-    if (mkdtemp(mtraceDirName) != NULL && mtraceDirName[0] != 0) {
-        memcpy(mtraceFileName, mtraceDirName, strlen(mtraceDirName));
-        setEnvironmentVariable();
-    }
+    setEnvironmentVariable();
 
     failureReporter = new FailureReporter();
     memoryTracer = new MemoryTracer();
-    traceFileParser = new TraceFileParser(mtraceFileName);
+    traceFileParser = new TraceFileParser(mtraceFileName.c_str());
 }
 
 MemoryTracerListener::~MemoryTracerListener() {
     unsetenv(ENVIRONMENT_VARIABLE);
 
-    unlink(mtraceFileName);
-    rmdir(mtraceDirName);
+    unlink(mtraceFileName.c_str());
 
-    free(mtraceDirName);
-    free(mtraceFileName);
     free(mtraceEnvironmentVariable);
 
     delete traceFileParser;
@@ -108,7 +100,7 @@ void MemoryTracerListener::buildInvalidDeallocationErrorMessage(
 
 void MemoryTracerListener::setEnvironmentVariable() {
     int nameLength = strlen(ENVIRONMENT_VARIABLE);
-    int valueLength = strlen(mtraceFileName);
+    int valueLength = mtraceFileName.length();
     int totalLength = nameLength + 1 + valueLength;
 
     mtraceEnvironmentVariable = (char*)malloc(totalLength + 1);
@@ -119,7 +111,7 @@ void MemoryTracerListener::setEnvironmentVariable() {
     char* end = value + valueLength;
 
     memcpy(name, ENVIRONMENT_VARIABLE, nameLength);
-    memcpy(value, mtraceFileName, valueLength);
+    memcpy(value, mtraceFileName.c_str(), valueLength);
     *separator = '=';
     *end = '\0';
 
