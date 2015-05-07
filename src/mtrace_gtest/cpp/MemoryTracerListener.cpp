@@ -37,16 +37,12 @@ void MemoryTracerListener::OnTestStart(const testing::TestInfo& testInfo) {
 }
 
 void MemoryTracerListener::OnTestEnd(const testing::TestInfo& testInfo) {
-    stopTrace();
+    memoryTracer->stop();
     checkTraceResults();
 }
 
 void MemoryTracerListener::setEnvironmentVariable() {
     *mallocTraceEnvVar = mtraceFileName;
-}
-
-void MemoryTracerListener::stopTrace() {
-    memoryTracer->stop();
 }
 
 void MemoryTracerListener::checkTraceResults() {

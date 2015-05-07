@@ -31,7 +31,6 @@ protected:
     MemoryTracerListener(bool shouldSetEnvironmentVariable);
 
     void setEnvironmentVariable();
-    virtual void stopTrace();
     virtual void checkTraceResults();
 
 private:

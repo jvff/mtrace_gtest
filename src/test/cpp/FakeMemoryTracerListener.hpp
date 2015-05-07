@@ -8,9 +8,7 @@
 
 class FakeMemoryTracerListener : public MemoryTracerListener {
 private:
-    bool stopTraceWasCalledFirst;
     int timesCheckTraceResultsWasCalled;
-    int timesStopTraceWasCalled;
 
     MockInterceptor<EnvironmentVariable> envVar;
     MockInterceptor<FailureReporter> reporter;
@@ -19,9 +17,7 @@ private:
 
 public:
     FakeMemoryTracerListener() : MemoryTracerListener(false),
-            stopTraceWasCalledFirst(false),
             timesCheckTraceResultsWasCalled(0),
-            timesStopTraceWasCalled(0),
             envVar(mallocTraceEnvVar),
             reporter(failureReporter),
             tracer(memoryTracer),
@@ -74,22 +70,6 @@ public:
 
     int getTimesCheckTraceResultsWasCalled() {
         return timesCheckTraceResultsWasCalled;
-    }
-
-    void stopTrace() {
-        ++timesStopTraceWasCalled;
-        stopTraceWasCalledFirst = stopTraceWasCalledFirst
-                || timesCheckTraceResultsWasCalled == 0;
-
-        MemoryTracerListener::stopTrace();
-    }
-
-    int getTimesStopTraceWasCalled() {
-        return timesStopTraceWasCalled;
-    }
-
-    bool wasStopTraceCalledBeforeCheckTraceResults() {
-        return stopTraceWasCalledFirst;
     }
 
     using MemoryTracerListener::setEnvironmentVariable;
