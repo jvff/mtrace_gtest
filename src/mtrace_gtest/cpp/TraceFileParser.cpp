@@ -2,10 +2,8 @@
 
 #include "TraceFileParser.hpp"
 
-TraceFileParser::TraceFileParser(const char* traceFileName) {
-    this->traceFileName = traceFileName;
-
-    invalidDeallocations = 0;
+TraceFileParser::TraceFileParser(const std::string& traceFileName) :
+	traceFileName(traceFileName), invalidDeallocations(0) {
 }
 
 void TraceFileParser::parse() {

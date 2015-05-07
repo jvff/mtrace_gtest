@@ -6,12 +6,12 @@
 
 class TraceFileParser {
 private:
-    const char* traceFileName;
     int invalidDeallocations;
+    std::string traceFileName;
     std::map<void*, int> activeAllocations;
 
 public:
-    TraceFileParser(const char* traceFileName);
+    TraceFileParser(const std::string& traceFileName);
 
     virtual void parse();
 

@@ -15,7 +15,7 @@ MemoryTracerListener::MemoryTracerListener() : tempDir("mtrace_gtest.") {
 
     failureReporter = new FailureReporter();
     memoryTracer = new MemoryTracer();
-    traceFileParser = new TraceFileParser(mtraceFileName.c_str());
+    traceFileParser = new TraceFileParser(mtraceFileName);
 }
 
 MemoryTracerListener::~MemoryTracerListener() {
