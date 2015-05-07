@@ -18,6 +18,12 @@ const std::string& EnvironmentVariable::getName() {
 }
 
 void EnvironmentVariable::operator=(const char* value) {
+    std::string stringValue{value};
+
+    *this = stringValue;
+}
+
+void EnvironmentVariable::operator=(const std::string& value) {
     std::string environmentString = name + "=" + value;
 
     this->environmentString = strdup(environmentString.c_str());
