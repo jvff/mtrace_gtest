@@ -32,6 +32,10 @@ public:
         return tempDir;
     }
 
+    EnvironmentVariable* getMallocTraceEnvVar() {
+        return mallocTraceEnvVar;
+    }
+
     TraceFileParser* getParser() {
         return parser.getOriginal();
     }

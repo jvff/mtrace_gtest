@@ -17,7 +17,6 @@ using fakeit::When;
 class MemoryTracerListenerTest : public testing::Test {
 private:
     bool parserShouldHaveBeenUsed = false;
-    const char* environmentVariable;
     char* dirPath;
 
     void verifyMocks() {
@@ -44,6 +43,7 @@ private:
     }
 
 protected:
+    const char* environmentVariable;
     FakeMemoryTracerListener* listener;
 
     virtual void SetUp() {

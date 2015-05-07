@@ -4,6 +4,12 @@
 
 #include "MemoryTracerListenerTest.hpp"
 
+TEST_F(MemoryTracerListenerTest, listenerUsesMallocTraceEnvVar) {
+    EnvironmentVariable* envVar = listener->getMallocTraceEnvVar();
+
+    EXPECT_EQ(environmentVariable, envVar->getName());
+}
+
 TEST_F(MemoryTracerListenerTest, setEnvironmentTest) {
     EXPECT_FALSE(getEnvironmentVariable() == NULL);
 }
