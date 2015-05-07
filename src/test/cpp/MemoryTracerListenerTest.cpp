@@ -14,6 +14,14 @@ TEST_F(MemoryTracerListenerTest, environmentVariableIsRemoved) {
     EXPECT_TRUE(getEnvironmentVariable() == NULL);
 }
 
+TEST_F(MemoryTracerListenerTest, listenerInitializesTempDir) {
+    std::string expectedPathPrefix = "/tmp/mtrace_gtest.";
+    int expectedLength = expectedPathPrefix.length();
+    TempDir& tempDir = listener->getTempDir();
+
+    EXPECT_EQ(expectedPathPrefix, tempDir.getPath().substr(0, expectedLength));
+}
+
 TEST_F(MemoryTracerListenerTest, traceFileIsInTempDir) {
     const char* tempDir = "/tmp/";
     const int length = strlen(tempDir);

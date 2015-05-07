@@ -28,6 +28,10 @@ public:
     ~FakeMemoryTracerListener() noexcept {
     }
 
+    TempDir& getTempDir() {
+        return tempDir;
+    }
+
     TraceFileParser* getParser() {
         return parser.getOriginal();
     }
