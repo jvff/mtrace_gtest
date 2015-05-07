@@ -89,6 +89,15 @@ TEST_F(MemoryTracerListenerTest, listenerInitializesTracer) {
     EXPECT_TRUE(memoryTracer != NULL);
 }
 
+TEST_F(MemoryTracerListenerTest, tracingStartsWhenTestStarts) {
+    const testing::UnitTest* unitTest = testing::UnitTest::GetInstance();
+    const testing::TestInfo* testInfo = unitTest->current_test_info();
+
+    listener->OnTestStart(*testInfo);
+
+    Verify(Method(listener->getMemoryTracerMock(), start)).Once();
+}
+
 TEST_F(MemoryTracerListenerTest, traceFileIsCreatedWhenTestStarts) {
     const testing::UnitTest* unitTest = testing::UnitTest::GetInstance();
     const testing::TestInfo* testInfo = unitTest->current_test_info();
