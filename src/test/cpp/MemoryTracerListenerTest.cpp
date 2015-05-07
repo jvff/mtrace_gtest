@@ -69,7 +69,6 @@ TEST_F(MemoryTracerListenerTest, parserIsCalledWhenTestEnds) {
     const testing::UnitTest* unitTest = testing::UnitTest::GetInstance();
     const testing::TestInfo* testInfo = unitTest->current_test_info();
 
-    listener->OnTestStart(*testInfo);
     prepareParserMock(0, 0, 0);
     listener->OnTestEnd(*testInfo);
 
