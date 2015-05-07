@@ -6,14 +6,15 @@
 #include "gtest/gtest.h"
 
 #include "FailureReporter.hpp"
+#include "MallocTraceEnvVar.hpp"
 #include "MemoryTracer.hpp"
 #include "TempDir.hpp"
 #include "TraceFileParser.hpp"
 
 class MemoryTracerListener : public testing::EmptyTestEventListener {
 protected:
-    char* mtraceEnvironmentVariable;
     std::string mtraceFileName;
+    EnvironmentVariable* mallocTraceEnvVar;
     FailureReporter* failureReporter;
     MemoryTracer* memoryTracer;
     TraceFileParser* traceFileParser;

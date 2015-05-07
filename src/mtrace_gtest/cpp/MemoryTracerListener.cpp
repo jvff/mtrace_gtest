@@ -19,12 +19,9 @@ MemoryTracerListener::MemoryTracerListener() : tempDir("mtrace_gtest.") {
 }
 
 MemoryTracerListener::~MemoryTracerListener() {
-    unsetenv(ENVIRONMENT_VARIABLE);
-
     unlink(mtraceFileName.c_str());
 
-    free(mtraceEnvironmentVariable);
-
+    delete mallocTraceEnvVar;
     delete traceFileParser;
     delete memoryTracer;
     delete failureReporter;
@@ -99,21 +96,6 @@ void MemoryTracerListener::buildInvalidDeallocationErrorMessage(
 }
 
 void MemoryTracerListener::setEnvironmentVariable() {
-    int nameLength = strlen(ENVIRONMENT_VARIABLE);
-    int valueLength = mtraceFileName.length();
-    int totalLength = nameLength + 1 + valueLength;
-
-    mtraceEnvironmentVariable = (char*)malloc(totalLength + 1);
-
-    char* name = &mtraceEnvironmentVariable[0];
-    char* separator = name + nameLength;
-    char* value = separator + 1;
-    char* end = value + valueLength;
-
-    memcpy(name, ENVIRONMENT_VARIABLE, nameLength);
-    memcpy(value, mtraceFileName.c_str(), valueLength);
-    *separator = '=';
-    *end = '\0';
-
-    putenv(mtraceEnvironmentVariable);
+    mallocTraceEnvVar = new MallocTraceEnvVar();
+    *mallocTraceEnvVar = mtraceFileName;
 }
