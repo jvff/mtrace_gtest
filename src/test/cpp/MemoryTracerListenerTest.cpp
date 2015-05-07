@@ -10,16 +10,6 @@ TEST_F(MemoryTracerListenerTest, listenerUsesMallocTraceEnvVar) {
     EXPECT_EQ(environmentVariable, envVar->getName());
 }
 
-TEST_F(MemoryTracerListenerTest, setEnvironmentTest) {
-    EXPECT_FALSE(getEnvironmentVariable() == NULL);
-}
-
-TEST_F(MemoryTracerListenerTest, environmentVariableIsRemoved) {
-    destroy();
-
-    EXPECT_TRUE(getEnvironmentVariable() == NULL);
-}
-
 TEST_F(MemoryTracerListenerTest, listenerInitializesTempDir) {
     std::string expectedPathPrefix = "/tmp/mtrace_gtest.";
     int expectedLength = expectedPathPrefix.length();
