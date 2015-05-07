@@ -14,8 +14,8 @@ public:
 
     const std::string& getName();
 
-    void operator=(const char* value);
-    void operator=(const std::string& value);
+    virtual void operator=(const char* value);
+    virtual void operator=(const std::string& value);
 };
 
 #endif
