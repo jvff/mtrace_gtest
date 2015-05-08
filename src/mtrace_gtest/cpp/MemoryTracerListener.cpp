@@ -7,20 +7,13 @@
 
 #define ENVIRONMENT_VARIABLE "MALLOC_TRACE"
 
-MemoryTracerListener::MemoryTracerListener() : MemoryTracerListener(true) {
-}
-
-MemoryTracerListener::MemoryTracerListener(bool shouldSetEnvironmentVariable)
-	: tempDir("mtrace_gtest.") {
+MemoryTracerListener::MemoryTracerListener() : tempDir("mtrace_gtest.") {
     mtraceFileName = tempDir.getPath() + "/mtrace";
 
     mallocTraceEnvVar = new MallocTraceEnvVar();
     failureReporter = new FailureReporter();
     memoryTracer = new MemoryTracer();
     traceFileParser = new TraceFileParser(mtraceFileName);
-
-    if (shouldSetEnvironmentVariable)
-	setEnvironmentVariable();
 }
 
 MemoryTracerListener::~MemoryTracerListener() {
@@ -32,6 +25,11 @@ MemoryTracerListener::~MemoryTracerListener() {
     delete failureReporter;
 }
 
+void MemoryTracerListener::OnTestProgramStart(
+	const testing::UnitTest& unitTest) {
+    *mallocTraceEnvVar = mtraceFileName;
+}
+
 void MemoryTracerListener::OnTestStart(const testing::TestInfo& testInfo) {
     memoryTracer->start();
 }
@@ -39,10 +37,6 @@ void MemoryTracerListener::OnTestStart(const testing::TestInfo& testInfo) {
 void MemoryTracerListener::OnTestEnd(const testing::TestInfo& testInfo) {
     memoryTracer->stop();
     checkTraceResults();
-}
-
-void MemoryTracerListener::setEnvironmentVariable() {
-    *mallocTraceEnvVar = mtraceFileName;
 }
 
 void MemoryTracerListener::checkTraceResults() {

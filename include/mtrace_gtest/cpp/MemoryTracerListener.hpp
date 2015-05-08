@@ -24,13 +24,11 @@ public:
     MemoryTracerListener();
     virtual ~MemoryTracerListener();
 
+    virtual void OnTestProgramStart(const testing::UnitTest& unitTest);
     virtual void OnTestStart(const testing::TestInfo& testInfo);
     virtual void OnTestEnd(const testing::TestInfo& testInfo);
 
 protected:
-    MemoryTracerListener(bool shouldSetEnvironmentVariable);
-
-    void setEnvironmentVariable();
     virtual void checkTraceResults();
 
 private:
