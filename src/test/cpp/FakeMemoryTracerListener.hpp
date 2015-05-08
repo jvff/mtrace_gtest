@@ -14,10 +14,8 @@ private:
     MockInterceptor<TraceFileParser> parser;
 
 public:
-    FakeMemoryTracerListener() : MemoryTracerListener(false),
-            envVar(mallocTraceEnvVar),
-            reporter(failureReporter),
-            tracer(memoryTracer),
+    FakeMemoryTracerListener() : envVar(mallocTraceEnvVar),
+            reporter(failureReporter), tracer(memoryTracer),
             parser(traceFileParser) {
     }
 
@@ -61,7 +59,6 @@ public:
     }
 
     using MemoryTracerListener::checkTraceResults;
-    using MemoryTracerListener::setEnvironmentVariable;
 };
 
 #endif
