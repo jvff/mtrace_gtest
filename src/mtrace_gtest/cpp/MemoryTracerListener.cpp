@@ -28,6 +28,8 @@ MemoryTracerListener::~MemoryTracerListener() {
 void MemoryTracerListener::OnTestProgramStart(
 	const testing::UnitTest& unitTest) {
     *mallocTraceEnvVar = mtraceFileName;
+    memoryTracer->start();
+    memoryTracer->stop();
 }
 
 void MemoryTracerListener::OnTestStart(const testing::TestInfo& testInfo) {
