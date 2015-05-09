@@ -12,16 +12,19 @@ TEST_F(MemoryTracerListenerTest, listenerUsesMallocTraceEnvVar) {
     EXPECT_EQ(environmentVariable, envVar->getName());
 }
 
-TEST_F(MemoryTracerListenerTest, envVarIsSetWhenTestProgramStarts) {
+TEST_F(MemoryTracerListenerTest, initializationInTestProgramStarts) {
     const testing::UnitTest* unitTest = testing::UnitTest::GetInstance();
-    Mock<EnvironmentVariable>& mock = listener->getMallocTraceEnvVarMock();
+    auto& envVarMock = listener->getMallocTraceEnvVarMock();
+    auto& tracerMock = listener->getMemoryTracerMock();
 
-    When(OverloadedMethod(mock, operator=, void(const std::string&))).Return();
+    When(OverloadedMethod(envVarMock, operator=, void(const std::string&)))
+            .Return();
 
     listener->OnTestProgramStart(*unitTest);
 
-    Verify(OverloadedMethod(mock, operator=, void(const std::string&))
-            .Using(getFilePath()));
+    Verify(OverloadedMethod(envVarMock, operator=, void(const std::string&))
+            .Using(getFilePath())
+        + Method(tracerMock, start) + Method(tracerMock, stop));
 }
 
 TEST_F(MemoryTracerListenerTest, listenerInitializesTempDir) {
