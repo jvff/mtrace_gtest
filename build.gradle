@@ -22,6 +22,9 @@ model {
 
     components {
         mtrace_gtest(NativeLibrarySpec) {
+            binaries.all {
+                cppCompiler.args "-std=c++11"
+            }
             sources.cpp.exportedHeaders {
                 srcDir 'include/mtrace_gtest/cpp'
                 include '**/*.hpp'
